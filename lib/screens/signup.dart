@@ -1,8 +1,46 @@
+import 'package:e_commerce_app/components/filled_button.dart';
+import 'package:e_commerce_app/components/input_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final nameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  String name = '';
+  String username = '';
+  String email = '';
+  String password = '';
+
+  void signup() {
+    setState(() {
+      name = nameController.text;
+      username = usernameController.text;
+      email = emailController.text;
+      password = passwordController.text;
+    });
+
+    Navigator.pushNamedAndRemoveUntil(context, '/store', (_) => false);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +69,110 @@ class SignupScreen extends StatelessWidget {
       );
     }
 
+    Widget nameInput() {
+      return CustomFormField(
+          labelText: 'Full Name',
+          formIcon: Icons.person,
+          controller: nameController,
+          hintText: 'Your Full Name',
+          isObscured: false,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Name cannot be empty";
+            } else if (value.length < 3) {
+              return "Name must be at least 3 characters";
+            }
+            return null;
+          });
+    }
+
+    Widget usernameInput() {
+      return CustomFormField(
+          labelText: 'Username',
+          formIcon: Icons.person_pin,
+          controller: emailController,
+          hintText: 'Your Username',
+          isObscured: false,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Username cannot be empty";
+            } else if (value.length < 3) {
+              return "Username must be at least 3 characters";
+            }
+            return null;
+          });
+    }
+
+    Widget emailInput() {
+      return CustomFormField(
+          labelText: 'Email Address',
+          formIcon: Icons.mail,
+          controller: emailController,
+          hintText: 'example@gmail.com',
+          isObscured: false,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Email cannot be empty";
+            } else if (!value.contains('@')) {
+              return "Please enter a valid email address";
+            }
+            return null;
+          });
+    }
+
+    Widget passwordInput() {
+      return CustomFormField(
+          labelText: 'Password',
+          formIcon: Icons.lock,
+          controller: passwordController,
+          hintText: 'Password',
+          isObscured: true,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Password cannot be empty";
+            } else if (value.length < 8) {
+              return "Please must be at least 8 characters";
+            }
+            return null;
+          });
+    }
+
+    Widget signUpButton() {
+      return FilledExpandedButton(
+        buttonText: 'Sign Up',
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            signup();
+          }
+        },
+      );
+    }
+
+    Widget footer() {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Already have an account? ',
+              style: subtitleTextStyle.copyWith(
+                fontSize: 12,
+              ),
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signin');
+                },
+                child: Text(
+                  'Sign In',
+                  style: buttonTextStyle.copyWith(fontSize: 12),
+                ))
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
@@ -40,11 +182,13 @@ class SignupScreen extends StatelessWidget {
           child: Column(
             children: [
               header(),
-              // emailInput(),
-              // passwordInput(),
-              // signInButton(),
-              // const Spacer(),
-              // footer()
+              nameInput(),
+              usernameInput(),
+              emailInput(),
+              passwordInput(),
+              signUpButton(),
+              const Spacer(),
+              footer()
             ],
           ),
         ),
