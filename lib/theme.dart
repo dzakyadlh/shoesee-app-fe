@@ -10,9 +10,11 @@ Color priceColor = const Color(0xFF2C96F1);
 Color backgroundPrimaryColor = const Color(0xFF1F1D2B);
 Color backgroundSecondaryColor = const Color(0xFF2B2937);
 Color backgroundTertiaryColor = const Color(0xFF242231);
+Color backgroundNavigationColor = const Color(0xFF252836);
 Color primaryTextColor = const Color(0xFFE1E1E1);
 Color secondaryTextColor = const Color(0xFF999999);
 Color subtitleTextColor = const Color(0xFF504F5E);
+Color onSecondaryColor = const Color(0xFFFFFFFF);
 
 TextStyle primaryTextStyle = GoogleFonts.poppins(
   color: primaryTextColor,

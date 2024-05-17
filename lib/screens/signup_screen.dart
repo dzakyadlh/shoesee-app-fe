@@ -30,7 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
       password = passwordController.text;
     });
 
-    Navigator.pushNamedAndRemoveUntil(context, '/store', (_) => false);
+    Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
   }
 
   @override
@@ -141,9 +141,10 @@ class _SignupScreenState extends State<SignupScreen> {
       return FilledExpandedButton(
         buttonText: 'Sign Up',
         onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            signup();
-          }
+          // if (_formKey.currentState!.validate()) {
+          //   signup();
+          // }
+          signup();
         },
       );
     }
@@ -160,12 +161,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 fontSize: 12,
               ),
             ),
-            TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signin');
+            GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
                 },
                 child: Text(
-                  'Sign In',
+                  'Sign in',
                   style: buttonTextStyle.copyWith(fontSize: 12),
                 ))
           ],
@@ -179,17 +180,20 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-          child: Column(
-            children: [
-              header(),
-              nameInput(),
-              usernameInput(),
-              emailInput(),
-              passwordInput(),
-              signUpButton(),
-              const Spacer(),
-              footer()
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                header(),
+                nameInput(),
+                usernameInput(),
+                emailInput(),
+                passwordInput(),
+                signUpButton(),
+                const Spacer(),
+                footer()
+              ],
+            ),
           ),
         ),
       ),

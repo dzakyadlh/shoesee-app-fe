@@ -11,7 +11,7 @@ class LandingScreen extends StatelessWidget {
       backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

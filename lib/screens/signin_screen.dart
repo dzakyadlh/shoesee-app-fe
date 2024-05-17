@@ -24,7 +24,7 @@ class _SigninScreenState extends State<SigninScreen> {
       password = passwordController.text;
     });
     if (email == "admin@gmail.com" && password == "admin123") {
-      Navigator.pushNamedAndRemoveUntil(context, '/store', (_) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
     }
   }
 
@@ -119,8 +119,8 @@ class _SigninScreenState extends State<SigninScreen> {
                 fontSize: 12,
               ),
             ),
-            TextButton(
-                onPressed: () {
+            GestureDetector(
+                onTap: () {
                   Navigator.pushNamed(context, '/signup');
                 },
                 child: Text(

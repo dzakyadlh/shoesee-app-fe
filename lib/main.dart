@@ -1,8 +1,8 @@
-import 'package:e_commerce_app/screens/landing.dart';
-import 'package:e_commerce_app/screens/signin.dart';
-import 'package:e_commerce_app/screens/signup.dart';
+import 'package:e_commerce_app/screens/landing_screen.dart';
+import 'package:e_commerce_app/screens/main/main_screen.dart';
+import 'package:e_commerce_app/screens/signin_screen.dart';
+import 'package:e_commerce_app/screens/signup_screen.dart';
 import 'package:e_commerce_app/screens/splash.dart';
-import 'package:e_commerce_app/screens/store.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         '/landing': (context) => const LandingScreen(),
         '/signin': (context) => const SigninScreen(),
         '/signup': (context) => const SignupScreen(),
-        '/store': (context) => const StoreScreen(),
+        '/main': (context) => const MainScreen(),
         '/cart': (context) => const LandingScreen(),
       },
     );
