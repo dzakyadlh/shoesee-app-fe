@@ -5,6 +5,7 @@ double defaultMargin = 32.0;
 
 Color primaryColor = const Color(0xFF6C5ECF);
 Color secondaryColor = const Color(0xFF38ABBE);
+Color tertiaryColor = const Color(0xFF2B2844);
 Color alertColor = const Color(0xFFED6363);
 Color priceColor = const Color(0xFF2C96F1);
 Color backgroundPrimaryColor = const Color(0xFF1F1D2B);

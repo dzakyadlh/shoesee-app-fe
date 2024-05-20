@@ -69,6 +69,7 @@ flutter:
     - assets/images/profile_pic_default.png
     - assets/images/shoe_1.png
     - assets/images/shop.png
+    - assets/images/shop_online.png
     - assets/images/splash.png
     - assets/images/landing_shoe.png
 

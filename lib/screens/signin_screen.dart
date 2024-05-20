@@ -97,7 +97,7 @@ class _SigninScreenState extends State<SigninScreen> {
     }
 
     Widget signInButton() {
-      return FilledExpandedButton(
+      return ExpandedFilledButton(
         buttonText: 'Sign In',
         onPressed: () {
           if (_formKey.currentState!.validate()) {

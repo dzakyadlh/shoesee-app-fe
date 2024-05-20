@@ -119,10 +119,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: customBottomNav(),
-      body: SafeArea(
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-              child: _pages[currentIndex])),
+      body: SafeArea(child: _pages[currentIndex]),
     );
   }
 }

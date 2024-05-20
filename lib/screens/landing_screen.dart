@@ -34,7 +34,7 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(
               height: 16.0,
             ),
-            FilledExpandedButton(
+            ExpandedFilledButton(
                 buttonText: 'Get Started',
                 onPressed: () {
                   Navigator.pushNamed(context, '/signin');

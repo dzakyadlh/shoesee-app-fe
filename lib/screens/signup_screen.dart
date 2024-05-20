@@ -138,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     Widget signUpButton() {
-      return FilledExpandedButton(
+      return ExpandedFilledButton(
         buttonText: 'Sign Up',
         onPressed: () {
           // if (_formKey.currentState!.validate()) {

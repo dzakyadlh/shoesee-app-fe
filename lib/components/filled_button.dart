@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
-class FilledExpandedButton extends StatelessWidget {
-  const FilledExpandedButton(
+class ExpandedFilledButton extends StatelessWidget {
+  const ExpandedFilledButton(
       {super.key, required this.buttonText, required this.onPressed});
 
   final String buttonText;
@@ -29,6 +29,39 @@ class FilledExpandedButton extends StatelessWidget {
           ))
         ],
       ),
+    );
+  }
+}
+
+class CustomFilledButton extends StatelessWidget {
+  const CustomFilledButton(
+      {super.key,
+      required this.buttonHeight,
+      required this.buttonText,
+      required this.buttonTextSize,
+      required this.onPressed});
+
+  final double buttonHeight;
+  final String buttonText;
+  final double buttonTextSize;
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: buttonHeight,
+      child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12))),
+          child: Text(
+            buttonText,
+            style: primaryTextStyle.copyWith(
+                fontSize: buttonTextSize, fontWeight: medium),
+          )),
     );
   }
 }

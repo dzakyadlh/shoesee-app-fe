@@ -1,3 +1,5 @@
+import 'package:e_commerce_app/components/product_card.dart';
+import 'package:e_commerce_app/components/product_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
@@ -9,6 +11,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<String> products = [
+    'Product A',
+    'Product B',
+    'Product C',
+    'Product D',
+    'Product E',
+    'Product F',
+  ];
+
   Widget header() {
     return Container(
       margin: const EdgeInsets.only(top: 16),
@@ -103,15 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget popularProducts() {
-    final List<String> products = [
-      'Product A',
-      'Product B',
-      'Product C',
-      'Product D',
-      'Product E',
-      'Product F',
-    ];
-
     return Container(
       margin: EdgeInsets.only(top: defaultMargin),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -120,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: primaryTextStyle.copyWith(fontSize: 22, fontWeight: semibold),
         ),
         const SizedBox(
-          height: 8,
+          height: 14,
         ),
         SizedBox(
           height: 280,
@@ -130,49 +132,34 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (_, index) {
                 return GestureDetector(
-                  child: Container(
-                    width: 220,
-                    margin: const EdgeInsets.only(right: 16),
-                    padding:
-                        const EdgeInsets.only(bottom: 8, left: 16, right: 16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/images/landing_shoe.png',
-                          width: 180,
-                          height: 180,
-                        ),
-                        Text(
-                          'Hiking',
-                          style: secondaryTextStyle.copyWith(fontSize: 12),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          products[index],
-                          style: subtitleTextStyle.copyWith(
-                              fontSize: 18, fontWeight: semibold),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          '\$143.98',
-                          style: priceTextStyle.copyWith(
-                              fontSize: 14, fontWeight: semibold),
-                        )
-                      ],
-                    ),
-                  ),
-                );
+                    child: ProductCard(product: products[index]));
               }),
         )
       ]),
+    );
+  }
+
+  Widget newArrivals() {
+    return Container(
+      margin: EdgeInsets.only(top: defaultMargin),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('New Arrivals',
+              style: primaryTextStyle.copyWith(
+                  fontSize: 22, fontWeight: semibold)),
+          const SizedBox(
+            height: 14,
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: products.length,
+              itemBuilder: (_, index) {
+                return GestureDetector(
+                    child: ProductTile(product: products[index]));
+              })
+        ],
+      ),
     );
   }
 
@@ -183,10 +170,16 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: defaultMargin),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [header(), categorySlider(), popularProducts()],
+            children: [
+              header(),
+              categorySlider(),
+              popularProducts(),
+              newArrivals()
+            ],
           ),
         ),
       ),
