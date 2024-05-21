@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/components/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
@@ -162,16 +163,36 @@ class ChatDetailScreen extends StatelessWidget {
       );
     }
 
+    Widget contents() {
+      return ListView(
+        padding: EdgeInsets.symmetric(
+          horizontal: defaultMargin,
+        ),
+        children: const [
+          ChatBubble(
+            chatText: 'Hi, is this item still available?',
+            isSender: true,
+            hasProduct: true,
+          ),
+          ChatBubble(
+            chatText:
+                'Good night. This item is only available with size 42 and 43',
+            isSender: false,
+          ),
+          ChatBubble(
+            chatText: 'Okay, I\'ll order the one with size 42',
+            isSender: true,
+          )
+        ],
+      );
+    }
+
     return Scaffold(
       appBar: header(),
       backgroundColor: backgroundTertiaryColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Container(
-          child: const Column(
-            children: [],
-          ),
-        ),
+        child: Container(child: contents()),
       ),
       bottomNavigationBar: chatInput(),
     );

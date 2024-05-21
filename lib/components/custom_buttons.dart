@@ -34,12 +34,13 @@ class ExpandedFilledButton extends StatelessWidget {
 }
 
 class CustomFilledButton extends StatelessWidget {
-  const CustomFilledButton(
-      {super.key,
-      required this.buttonHeight,
-      required this.buttonText,
-      required this.buttonTextSize,
-      required this.onPressed});
+  const CustomFilledButton({
+    super.key,
+    required this.buttonHeight,
+    required this.buttonText,
+    required this.buttonTextSize,
+    required this.onPressed,
+  });
 
   final double buttonHeight;
   final String buttonText;
