@@ -1,4 +1,3 @@
-import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:google_fonts/google_fonts.dart';

@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         child: BottomAppBar(
           shape: const CircularNotchedRectangle(),
-          color: backgroundNavigationColor,
+          color: backgroundFourthColor,
           notchMargin: 10,
           clipBehavior: Clip.antiAlias,
           child: Wrap(children: [
