@@ -1,5 +1,5 @@
 import 'package:e_commerce_app/components/custom_buttons.dart';
-import 'package:e_commerce_app/components/favorite_tile.dart';
+import 'package:e_commerce_app/components/wishlist_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
@@ -66,12 +66,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
     }
 
     Widget contents() {
-      return Padding(
-        padding: EdgeInsets.all(defaultMargin),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [FavoriteTile(), FavoriteTile()],
-        ),
+      return Expanded(
+        child: Container(
+            padding: EdgeInsets.all(defaultMargin),
+            child: ListView(
+              children: const [WishlistTile(), WishlistTile()],
+            )),
       );
     }
 

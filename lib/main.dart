@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
+import 'package:e_commerce_app/screens/edit_profile_screen.dart';
 import 'package:e_commerce_app/screens/landing_screen.dart';
 import 'package:e_commerce_app/screens/main/main_screen.dart';
 import 'package:e_commerce_app/screens/signin_screen.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupScreen(),
         '/main': (context) => const MainScreen(),
         '/cart': (context) => const LandingScreen(),
-        '/chat': (context) => const ChatDetailScreen()
+        '/chat': (context) => const ChatDetailScreen(),
+        '/edit-profile': (context) => const EditProfileScreen()
       },
     );
   }

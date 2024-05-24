@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
-class FavoriteTile extends StatelessWidget {
-  const FavoriteTile({super.key});
+class WishlistTile extends StatelessWidget {
+  const WishlistTile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.only(top: 10, left: 12, bottom: 14, right: 20),
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),

@@ -72,6 +72,7 @@ flutter:
     - assets/images/shop_online.png
     - assets/images/splash.png
     - assets/images/landing_shoe.png
+    - assets/images/exit_button.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
