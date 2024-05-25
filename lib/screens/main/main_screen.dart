@@ -114,7 +114,8 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundPrimaryColor,
+      backgroundColor:
+          currentIndex == 0 ? backgroundPrimaryColor : backgroundTertiaryColor,
       resizeToAvoidBottomInset: false,
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

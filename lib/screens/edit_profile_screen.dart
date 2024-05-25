@@ -48,49 +48,62 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
 
-    Widget contents() {
+    Widget profilePicture() {
+      return ClipOval(
+        child: Image.asset(
+          'assets/images/profile_pic_default.png',
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    Widget inputFields() {
       return Form(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipOval(
-              child: Image.asset(
-                'assets/images/profile_pic_default.png',
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(
-              height: defaultMargin,
+            Text(
+              'Name',
+              style: secondaryTextStyle.copyWith(fontSize: 13),
             ),
             TextFormField(
               controller: nameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                labelText: 'Name',
-                labelStyle: secondaryTextStyle,
+                hintText: 'Name',
+                hintStyle: primaryTextStyle,
               ),
             ),
             const SizedBox(
               height: 24,
+            ),
+            Text(
+              'Username',
+              style: secondaryTextStyle.copyWith(fontSize: 13),
             ),
             TextFormField(
               controller: usernameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                labelText: 'Username',
-                labelStyle: secondaryTextStyle,
+                hintText: 'Username',
+                hintStyle: primaryTextStyle,
               ),
             ),
             const SizedBox(
               height: 24,
             ),
+            Text(
+              'Email Address',
+              style: secondaryTextStyle.copyWith(fontSize: 13),
+            ),
             TextFormField(
               controller: emailController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                labelText: 'Email Address',
-                labelStyle: secondaryTextStyle,
+                hintText: 'Email Address',
+                hintStyle: primaryTextStyle,
               ),
             ),
             const SizedBox(
@@ -109,7 +122,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Container(
         padding: EdgeInsets.all(defaultMargin),
         child: Column(
-          children: [contents()],
+          children: [
+            profilePicture(),
+            SizedBox(
+              height: defaultMargin,
+            ),
+            inputFields()
+          ],
         ),
       )),
     );
