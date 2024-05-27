@@ -37,6 +37,10 @@ TextStyle buttonTextStyle = GoogleFonts.poppins(
   color: primaryColor,
 );
 
+TextStyle alertTextStyle = GoogleFonts.poppins(
+  color: alertColor,
+);
+
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;
 FontWeight medium = FontWeight.w500;

@@ -132,7 +132,9 @@ class _ProductScreenState extends State<ProductScreen> {
                       size: 24,
                     )),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
                     icon: Icon(
                       Icons.shopping_cart,
                       color: backgroundPrimaryColor,

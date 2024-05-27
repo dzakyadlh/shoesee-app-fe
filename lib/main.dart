@@ -1,4 +1,6 @@
+import 'package:e_commerce_app/screens/cart_screen.dart';
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
+import 'package:e_commerce_app/screens/checkout_screen.dart';
 import 'package:e_commerce_app/screens/edit_profile_screen.dart';
 import 'package:e_commerce_app/screens/landing_screen.dart';
 import 'package:e_commerce_app/screens/main/main_screen.dart';
@@ -27,10 +29,11 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => const SigninScreen(),
         '/signup': (context) => const SignupScreen(),
         '/main': (context) => const MainScreen(),
-        '/cart': (context) => const LandingScreen(),
+        '/cart': (context) => const CartScreen(),
         '/chat': (context) => const ChatDetailScreen(),
         '/edit-profile': (context) => const EditProfileScreen(),
-        '/product': (context) => const ProductScreen()
+        '/product': (context) => const ProductScreen(),
+        '/checkout': (context) => const CheckoutScreen()
       },
     );
   }
