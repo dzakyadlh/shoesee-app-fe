@@ -1,7 +1,9 @@
 import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:e_commerce_app/components/input_fields.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -11,10 +13,10 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final nameController = TextEditingController();
-  final usernameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final nameController = TextEditingController(text: '');
+  final usernameController = TextEditingController(text: '');
+  final emailController = TextEditingController(text: '');
+  final passwordController = TextEditingController(text: '');
   final _formKey = GlobalKey<FormState>();
 
   String name = '';
@@ -22,28 +24,21 @@ class _SignupScreenState extends State<SignupScreen> {
   String email = '';
   String password = '';
 
-  void signup() {
-    setState(() {
-      name = nameController.text;
-      username = usernameController.text;
-      email = emailController.text;
-      password = passwordController.text;
-    });
-
-    Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    usernameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    signup() async {
+      if (await authProvider.register(
+        name: nameController.text,
+        username: usernameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+      )) {
+        Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+      }
+    }
+
     Widget header() {
       return Container(
         alignment: Alignment.centerLeft,
@@ -90,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return CustomFormField(
           labelText: 'Username',
           formIcon: Icons.person_pin,
-          controller: emailController,
+          controller: usernameController,
           hintText: 'Your Username',
           isObscured: false,
           validator: (value) {
