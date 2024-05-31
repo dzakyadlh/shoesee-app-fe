@@ -1,5 +1,8 @@
+import 'package:e_commerce_app/models/user_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -15,6 +18,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+
     PreferredSizeWidget header() {
       return PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -50,8 +56,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     Widget profilePicture() {
       return ClipOval(
-        child: Image.asset(
-          'assets/images/profile_pic_default.png',
+        child: Image.network(
+          user.photoUrl.toString(),
           width: 100,
           height: 100,
           fit: BoxFit.cover,
@@ -72,7 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: nameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: 'Name',
+                hintText: user.name,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -87,7 +93,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: usernameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: 'Username',
+                hintText: user.username,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -102,7 +108,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: emailController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: 'Email Address',
+                hintText: user.email,
                 hintStyle: primaryTextStyle,
               ),
             ),

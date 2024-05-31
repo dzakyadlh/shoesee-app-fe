@@ -1,7 +1,9 @@
-import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:e_commerce_app/components/input_fields.dart';
+import 'package:e_commerce_app/components/loading_button.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -17,26 +19,37 @@ class _SigninScreenState extends State<SigninScreen> {
 
   String email = "";
   String password = "";
-
-  void login() {
-    setState(() {
-      email = emailController.text;
-      password = passwordController.text;
-    });
-    if (email == "admin@gmail.com" && password == "admin123") {
-      Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-    }
-  }
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    login() async {
+      setState(() {
+        isLoading = true;
+      });
+
+      if (await authProvider.login(
+        email: emailController.text,
+        password: passwordController.text,
+      )) {
+        Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: alertColor,
+          content: const Text(
+            'Login failed',
+            textAlign: TextAlign.center,
+          ),
+        ));
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     Widget header() {
       return Container(
         alignment: Alignment.centerLeft,
@@ -97,13 +110,29 @@ class _SigninScreenState extends State<SigninScreen> {
     }
 
     Widget signInButton() {
-      return ExpandedFilledButton(
-        buttonText: 'Sign In',
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            login();
-          }
-        },
+      return Container(
+        height: 50,
+        margin: const EdgeInsets.only(top: 30),
+        child: Row(
+          children: [
+            Expanded(
+                child: TextButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  login();
+                }
+              },
+              style: TextButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              child: Text(
+                'Sign In',
+                style: primaryTextStyle.copyWith(fontWeight: semibold),
+              ),
+            ))
+          ],
+        ),
       );
     }
 
@@ -148,7 +177,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 ),
                 emailInput(),
                 passwordInput(),
-                signInButton(),
+                isLoading ? const LoadingButton() : signInButton(),
                 const Spacer(),
                 footer()
               ],

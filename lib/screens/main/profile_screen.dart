@@ -1,12 +1,18 @@
 import 'package:e_commerce_app/components/settings_tile.dart';
+import 'package:e_commerce_app/models/user_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserModel user = authProvider.user;
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundPrimaryColor,
@@ -19,8 +25,8 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipOval(
-                child: Image.asset(
-                  'assets/images/profile_pic_default.png',
+                child: Image.network(
+                  user.photoUrl.toString(),
                   width: 64,
                   height: 64,
                   fit: BoxFit.cover,
@@ -34,12 +40,12 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, User!',
+                    'Hello, ${user.name}!',
                     style: primaryTextStyle.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   ),
                   Text(
-                    '@username',
+                    '@${user.username}',
                     style: subtitleTextStyle.copyWith(fontSize: 16),
                   )
                 ],

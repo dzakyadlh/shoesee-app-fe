@@ -1,5 +1,5 @@
-import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:e_commerce_app/components/input_fields.dart';
+import 'package:e_commerce_app/components/loading_button.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
@@ -23,12 +23,17 @@ class _SignupScreenState extends State<SignupScreen> {
   String username = '';
   String email = '';
   String password = '';
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
     signup() async {
+      setState(() {
+        isLoading = true;
+      });
+
       if (await authProvider.register(
         name: nameController.text,
         username: usernameController.text,
@@ -36,7 +41,19 @@ class _SignupScreenState extends State<SignupScreen> {
         password: passwordController.text,
       )) {
         Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: alertColor,
+          content: const Text(
+            'Registration failed',
+            textAlign: TextAlign.center,
+          ),
+        ));
       }
+
+      setState(() {
+        isLoading = false;
+      });
     }
 
     Widget header() {
@@ -133,14 +150,29 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     Widget signUpButton() {
-      return ExpandedFilledButton(
-        buttonText: 'Sign Up',
-        onPressed: () {
-          // if (_formKey.currentState!.validate()) {
-          //   signup();
-          // }
-          signup();
-        },
+      return Container(
+        height: 50,
+        margin: const EdgeInsets.only(top: 30),
+        child: Row(
+          children: [
+            Expanded(
+                child: TextButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  signup();
+                }
+              },
+              style: TextButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              child: Text(
+                'Sign Up',
+                style: primaryTextStyle.copyWith(fontWeight: semibold),
+              ),
+            ))
+          ],
+        ),
       );
     }
 
@@ -184,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 usernameInput(),
                 emailInput(),
                 passwordInput(),
-                signUpButton(),
+                isLoading ? const LoadingButton() : signUpButton(),
                 const Spacer(),
                 footer()
               ],
