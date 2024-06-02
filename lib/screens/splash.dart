@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,12 +15,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(
-        const Duration(seconds: 3),
-        () => Navigator.pushNamedAndRemoveUntil(
-            context, '/landing', (_) => false));
-
+    getInit();
     super.initState();
+  }
+
+  getInit() async {
+    await Provider.of<ProductProvider>(context, listen: false).getProducts();
+
+    Navigator.pushNamed(context, '/signin');
   }
 
   @override

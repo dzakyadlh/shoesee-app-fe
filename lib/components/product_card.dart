@@ -1,10 +1,14 @@
+import 'package:e_commerce_app/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+  });
 
-  final String product;
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,10 @@ class ProductCard extends StatelessWidget {
             SizedBox(
               height: defaultMargin,
             ),
-            Image.asset(
-              'assets/images/shoe_1.png',
+            Image.network(
+              product.gallery.isNotEmpty
+                  ? product.gallery[0].url
+                  : "http://e-commerce-backend.test/storage/gallery/eCb0D1Co2QPkxBgHnNkug8sCPZK4Cqo2pfRxxXbC.png",
               width: 215,
               height: 120,
               fit: BoxFit.cover,
@@ -41,14 +47,14 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hiking',
+                    product.category.toString(),
                     style: secondaryTextStyle.copyWith(fontSize: 12),
                   ),
                   const SizedBox(
                     height: 6,
                   ),
                   Text(
-                    product,
+                    product.name,
                     style: subtitleTextStyle.copyWith(
                         fontSize: 18, fontWeight: semibold),
                     overflow: TextOverflow.ellipsis,
@@ -57,7 +63,7 @@ class ProductCard extends StatelessWidget {
                     height: 6,
                   ),
                   Text(
-                    '\$143.98',
+                    '\$${product.price}',
                     style: priceTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
                   ),

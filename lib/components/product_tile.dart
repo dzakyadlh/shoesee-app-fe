@@ -1,10 +1,14 @@
+import 'package:e_commerce_app/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
 class ProductTile extends StatelessWidget {
-  const ProductTile({super.key, required this.product});
+  const ProductTile({
+    super.key,
+    required this.product,
+  });
 
-  final String product;
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +23,10 @@ class ProductTile extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/shoe_1.png',
+              child: Image.network(
+                product.gallery.isNotEmpty
+                    ? product.gallery[0].url
+                    : "http://e-commerce-backend.test/storage/gallery/eCb0D1Co2QPkxBgHnNkug8sCPZK4Cqo2pfRxxXbC.png",
                 height: 120,
                 width: 120,
                 fit: BoxFit.cover,
@@ -34,14 +40,14 @@ class ProductTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Basketball',
+                  product.category.toString(),
                   style: secondaryTextStyle.copyWith(fontSize: 12),
                 ),
                 const SizedBox(
                   height: 6,
                 ),
                 Text(
-                  product,
+                  product.name,
                   style: primaryTextStyle.copyWith(
                       fontSize: 16, fontWeight: semibold),
                 ),
@@ -49,7 +55,7 @@ class ProductTile extends StatelessWidget {
                   height: 6,
                 ),
                 Text(
-                  '\$126',
+                  '\$${product.price}',
                   style:
                       priceTextStyle.copyWith(fontSize: 14, fontWeight: medium),
                 )

@@ -1,12 +1,10 @@
-import 'dart:ffi';
-
 import 'package:e_commerce_app/models/category_model.dart';
 import 'package:e_commerce_app/models/gallery_model.dart';
 
 class ProductModel {
   int id;
   String name;
-  Float price;
+  double price;
   String description;
   String? tags;
   CategoryModel category;
@@ -28,15 +26,21 @@ class ProductModel {
   ProductModel.fromJson(Map<String, dynamic> json)
       : id = json['id'] ?? 0,
         name = json['name'] ?? '',
-        price = json['price'] ?? 0,
+        price = json['price'] is int
+            ? (json['price'] as int).toDouble()
+            : (json['price'] as double? ?? 0.0),
         description = json['description'] ?? '',
-        tags = json['tags'] ?? '',
-        category = CategoryModel.fromJson(json['categories_id'] ?? 0),
+        tags = json['tags'],
+        category = json['category'] is Map<String, dynamic>
+            ? CategoryModel.fromJson(json['category'])
+            : CategoryModel(id: 0, name: ''),
         createdAt = DateTime.parse(json['created_at']),
         updatedAt = DateTime.parse(json['updated_at']),
-        gallery = json['gallery']
-            .map((gallery) => GalleryModel.fromJson(gallery))
-            .toList();
+        gallery = json['gallery'] != null
+            ? (json['gallery'] as List)
+                .map((item) => GalleryModel.fromJson(item))
+                .toList()
+            : [];
 
   Map<String, dynamic> toJson() {
     return {
