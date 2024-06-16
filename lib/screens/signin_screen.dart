@@ -121,6 +121,8 @@ class _SigninScreenState extends State<SigninScreen> {
                 if (_formKey.currentState!.validate()) {
                   login();
                 }
+                // Navigator.pushNamedAndRemoveUntil(
+                //     context, '/main', (_) => false);
               },
               style: TextButton.styleFrom(
                   backgroundColor: primaryColor,

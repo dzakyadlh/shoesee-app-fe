@@ -1,11 +1,18 @@
+import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class WishlistTile extends StatelessWidget {
-  const WishlistTile({super.key});
+  const WishlistTile({super.key, required this.product});
+
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.only(top: 10, left: 12, bottom: 14, right: 20),
@@ -18,8 +25,8 @@ class WishlistTile extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              'assets/images/shoe_1.png',
+            child: Image.network(
+              product.gallery[0].url,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -33,12 +40,12 @@ class WishlistTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Terrex Urban Low',
+                  product.name,
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: semibold),
                 ),
                 Text(
-                  '\$143.99',
+                  '\$${product.price}',
                   style:
                       priceTextStyle.copyWith(fontSize: 14, fontWeight: medium),
                 )
@@ -46,7 +53,9 @@ class WishlistTile extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              wishlistProvider.setProduct(product);
+            },
             icon: Icon(
               Icons.favorite,
               color: primaryTextColor,

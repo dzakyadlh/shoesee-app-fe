@@ -1,5 +1,8 @@
 import 'package:e_commerce_app/providers/auth_provider.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/product_provider.dart';
+import 'package:e_commerce_app/providers/transaction_provider.dart';
+import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:e_commerce_app/screens/cart_screen.dart';
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
 import 'package:e_commerce_app/screens/checkout_screen.dart';
@@ -7,7 +10,6 @@ import 'package:e_commerce_app/screens/checkout_success_screen.dart';
 import 'package:e_commerce_app/screens/edit_profile_screen.dart';
 import 'package:e_commerce_app/screens/landing_screen.dart';
 import 'package:e_commerce_app/screens/main/main_screen.dart';
-import 'package:e_commerce_app/screens/product_screen.dart';
 import 'package:e_commerce_app/screens/signin_screen.dart';
 import 'package:e_commerce_app/screens/signup_screen.dart';
 import 'package:e_commerce_app/screens/splash.dart';
@@ -28,6 +30,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ProductProvider()),
+        ChangeNotifierProvider(create: (context) => WishlistProvider()),
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => TransactionProvider()),
       ],
       child: MaterialApp(
         title: 'E-commerce App',
@@ -41,7 +46,6 @@ class MyApp extends StatelessWidget {
           '/cart': (context) => const CartScreen(),
           '/chat': (context) => const ChatDetailScreen(),
           '/edit-profile': (context) => const EditProfileScreen(),
-          '/product': (context) => const ProductScreen(),
           '/checkout': (context) => const CheckoutScreen(),
           '/checkout-success': (context) => const CheckoutSuccessScreen()
         },

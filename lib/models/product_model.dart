@@ -12,35 +12,30 @@ class ProductModel {
   DateTime updatedAt;
   List<GalleryModel> gallery;
 
-  ProductModel(
-      {required this.id,
-      required this.name,
-      required this.price,
-      required this.description,
-      required this.tags,
-      required this.category,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.gallery});
+  ProductModel({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.description,
+    this.tags,
+    required this.category,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.gallery,
+  });
 
   ProductModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'] ?? 0,
-        name = json['name'] ?? '',
-        price = json['price'] is int
-            ? (json['price'] as int).toDouble()
-            : (json['price'] as double? ?? 0.0),
-        description = json['description'] ?? '',
+      : id = json['id'],
+        name = json['name'],
+        price = double.parse(json['price'].toString()),
+        description = json['description'],
         tags = json['tags'],
-        category = json['category'] is Map<String, dynamic>
-            ? CategoryModel.fromJson(json['category'])
-            : CategoryModel(id: 0, name: ''),
+        category = CategoryModel.fromJson(json['categories']),
+        gallery = (json['gallery'] as List)
+            .map((item) => GalleryModel.fromJson(item))
+            .toList(),
         createdAt = DateTime.parse(json['created_at']),
-        updatedAt = DateTime.parse(json['updated_at']),
-        gallery = json['gallery'] != null
-            ? (json['gallery'] as List)
-                .map((item) => GalleryModel.fromJson(item))
-                .toList()
-            : [];
+        updatedAt = DateTime.parse(json['updated_at']);
 
   Map<String, dynamic> toJson() {
     return {
@@ -50,9 +45,14 @@ class ProductModel {
       'description': description,
       'tags': tags,
       'category': category.toJson(),
+      'gallery': gallery.map((e) => e.toJson()).toList(),
       'createdAt': createdAt.toString(),
       'updatedAt': updatedAt.toString(),
-      'gallery': gallery.map((gallery) => gallery.toJson()).toList()
     };
+  }
+
+  @override
+  String toString() {
+    return toJson().toString();
   }
 }

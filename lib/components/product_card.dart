@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/screens/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
@@ -14,7 +15,10 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/product');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductScreen(product: product)));
       },
       child: Container(
         width: 215,
@@ -33,7 +37,7 @@ class ProductCard extends StatelessWidget {
             Image.network(
               product.gallery.isNotEmpty
                   ? product.gallery[0].url
-                  : "http://e-commerce-backend.test/storage/gallery/eCb0D1Co2QPkxBgHnNkug8sCPZK4Cqo2pfRxxXbC.png",
+                  : "https://firebasestorage.googleapis.com/v0/b/gradee-b80f3.appspot.com/o/mathematics_hs.jpg?alt=media&token=0c870127-71e9-49c8-afe0-00cd0be2bc9a",
               width: 215,
               height: 120,
               fit: BoxFit.cover,
@@ -47,7 +51,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.category.toString(),
+                    product.category.name,
                     style: secondaryTextStyle.copyWith(fontSize: 12),
                   ),
                   const SizedBox(
@@ -58,6 +62,7 @@ class ProductCard extends StatelessWidget {
                     style: subtitleTextStyle.copyWith(
                         fontSize: 18, fontWeight: semibold),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   const SizedBox(
                     height: 6,

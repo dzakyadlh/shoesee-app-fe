@@ -1,18 +1,23 @@
+import 'package:e_commerce_app/models/cart_model.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class CartTile extends StatefulWidget {
-  const CartTile({super.key});
+  const CartTile({super.key, required this.cartItem});
+
+  final CartModel cartItem;
 
   @override
   State<CartTile> createState() => _CartTileState();
 }
 
 class _CartTileState extends State<CartTile> {
-  int productAmount = 0;
-
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
@@ -26,8 +31,8 @@ class _CartTileState extends State<CartTile> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  'assets/images/shoe_1.png',
+                child: Image.network(
+                  widget.cartItem.product.gallery[0].url,
                   width: 60,
                   height: 60,
                   fit: BoxFit.cover,
@@ -41,7 +46,7 @@ class _CartTileState extends State<CartTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Terrex Urban Low',
+                      widget.cartItem.product.name,
                       style: primaryTextStyle.copyWith(
                           fontSize: 14, fontWeight: semibold),
                     ),
@@ -49,7 +54,7 @@ class _CartTileState extends State<CartTile> {
                       height: 2,
                     ),
                     Text(
-                      '\$143.98',
+                      '\$${widget.cartItem.product.price}',
                       style: priceTextStyle.copyWith(fontSize: 14),
                     )
                   ],
@@ -59,9 +64,7 @@ class _CartTileState extends State<CartTile> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        productAmount++;
-                      });
+                      cartProvider.addQuantity(widget.cartItem.id);
                     },
                     child: Image.asset(
                       'assets/images/btn_add.png',
@@ -73,7 +76,7 @@ class _CartTileState extends State<CartTile> {
                     height: 2,
                   ),
                   Text(
-                    productAmount.toString(),
+                    widget.cartItem.quantity.toString(),
                     style: primaryTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
                   ),
@@ -82,11 +85,7 @@ class _CartTileState extends State<CartTile> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        if (productAmount > 0) {
-                          productAmount--;
-                        }
-                      });
+                      cartProvider.reduceQuantity(widget.cartItem.id);
                     },
                     child: Image.asset(
                       'assets/images/btn_drop.png',

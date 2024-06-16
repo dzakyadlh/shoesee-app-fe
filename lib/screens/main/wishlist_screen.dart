@@ -1,7 +1,9 @@
 import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:e_commerce_app/components/wishlist_tile.dart';
+import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -15,6 +17,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundPrimaryColor,
@@ -70,7 +74,11 @@ class _WishlistScreenState extends State<WishlistScreen> {
         child: Container(
             padding: EdgeInsets.all(defaultMargin),
             child: ListView(
-              children: const [WishlistTile(), WishlistTile()],
+              children: wishlistProvider.wishlist
+                  .map((product) => WishlistTile(
+                        product: product,
+                      ))
+                  .toList(),
             )),
       );
     }

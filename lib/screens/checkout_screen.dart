@@ -1,13 +1,55 @@
 import 'package:e_commerce_app/components/checkout_card.dart';
+import 'package:e_commerce_app/components/loading_button.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
+import 'package:e_commerce_app/providers/transaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:flutter_dash/flutter_dash.dart';
+import 'package:provider/provider.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  bool isLoading = false;
+
+  @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    TransactionProvider transactionProvider =
+        Provider.of<TransactionProvider>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    String address = 'Tokyo';
+    double shippingPrice = 0.0;
+
+    handleCheckout() async {
+      setState(() {
+        isLoading = true;
+      });
+      if (await transactionProvider.checkout(
+          authProvider.user.token.toString(),
+          cartProvider.carts,
+          address,
+          cartProvider.totalPrice(),
+          shippingPrice)) {
+        cartProvider.carts = [];
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/checkout-success',
+          (route) => false,
+        );
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
+
     PreferredSizeWidget header() {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
@@ -34,7 +76,7 @@ class CheckoutScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Address Details',
+              address,
               style:
                   primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
             ),
@@ -137,7 +179,7 @@ class CheckoutScreen extends StatelessWidget {
                 Text('Product Quantity',
                     style: secondaryTextStyle.copyWith(fontSize: 12)),
                 Text(
-                  '2 Items',
+                  '${cartProvider.totalItems()} Items',
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: medium),
                 )
@@ -152,7 +194,7 @@ class CheckoutScreen extends StatelessWidget {
                 Text('Product Price',
                     style: secondaryTextStyle.copyWith(fontSize: 12)),
                 Text(
-                  '\$575.96',
+                  '\$${cartProvider.totalPrice()}',
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: medium),
                 )
@@ -167,7 +209,7 @@ class CheckoutScreen extends StatelessWidget {
                 Text('Shipping',
                     style: secondaryTextStyle.copyWith(fontSize: 12)),
                 Text(
-                  'Free',
+                  shippingPrice == 0 ? 'Free' : '\$$shippingPrice',
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: medium),
                 )
@@ -191,7 +233,7 @@ class CheckoutScreen extends StatelessWidget {
                       fontSize: 14, fontWeight: semibold),
                 ),
                 Text(
-                  '\$575.92',
+                  '\$${cartProvider.totalPrice() + shippingPrice}',
                   style: priceTextStyle.copyWith(
                       fontSize: 14, fontWeight: semibold),
                 ),
@@ -209,8 +251,7 @@ class CheckoutScreen extends StatelessWidget {
         height: 50,
         child: FilledButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/checkout-success', (route) => false);
+            handleCheckout();
           },
           style: FilledButton.styleFrom(
               backgroundColor: primaryColor,
@@ -241,9 +282,13 @@ class CheckoutScreen extends StatelessWidget {
               const SizedBox(
                 height: 12,
               ),
-              const CheckoutCard(),
-              const CheckoutCard(),
-              const CheckoutCard(),
+              Column(
+                children: cartProvider.carts
+                    .map((product) => CheckoutCard(
+                          cartItem: product,
+                        ))
+                    .toList(),
+              ),
               const SizedBox(
                 height: 30,
               ),
@@ -252,7 +297,7 @@ class CheckoutScreen extends StatelessWidget {
               const Divider(
                 color: Color(0xFF2B2938),
               ),
-              checkoutButton()
+              isLoading ? const LoadingButton() : checkoutButton()
             ],
           ),
         ),

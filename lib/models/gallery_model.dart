@@ -6,12 +6,12 @@ class GalleryModel {
 
   GalleryModel.fromJson(Map<String, dynamic> json)
       : id = json['id'] ?? 0,
-        url = json['name'] ?? '';
+        url = json['url'] ?? '';
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': url,
+      'url': url,
     };
   }
 }

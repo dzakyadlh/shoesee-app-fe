@@ -1,36 +1,42 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
+import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key});
+  const ProductScreen({super.key, required this.product});
+
+  final ProductModel product;
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final List shoeImages = [
-    'assets/images/landing_shoe.png',
-    'assets/images/landing_shoe.png',
-    'assets/images/landing_shoe.png',
-  ];
-
-  final List similarShoes = [
-    'assets/images/shoe_1.png',
-    'assets/images/shoe_1.png',
-    'assets/images/shoe_1.png',
-    'assets/images/shoe_1.png',
-    'assets/images/shoe_1.png',
-    'assets/images/shoe_1.png',
-  ];
-
   int currentIndex = 0;
 
-  bool isWishlisted = false;
+  List similarShoes = [
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+    'assets/images/shoe_1.png',
+  ];
 
   @override
   Widget build(BuildContext context) {
+    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
+    bool isWishlisted = wishlistProvider.isWishlisted(widget.product);
+
     Future<void> showSuccessDialog() async {
       return showDialog(
           context: context,
@@ -83,7 +89,9 @@ class _ProductScreenState extends State<ProductScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 10),
                           child: FilledButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/cart');
+                              },
                               style: FilledButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
@@ -144,9 +152,9 @@ class _ProductScreenState extends State<ProductScreen> {
             ),
           ),
           CarouselSlider(
-              items: shoeImages
-                  .map((img) => Image.asset(
-                        img,
+              items: widget.product.gallery
+                  .map((img) => Image.network(
+                        img.url,
                         width: MediaQuery.of(context).size.width,
                         height: 310,
                         fit: BoxFit.cover,
@@ -163,7 +171,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   height: 310)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: shoeImages.asMap().entries.map((entry) {
+            children: widget.product.gallery.asMap().entries.map((entry) {
               return indicator(entry.key);
             }).toList(),
           )
@@ -203,31 +211,29 @@ class _ProductScreenState extends State<ProductScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'TERREX URBAN LOW',
+                      widget.product.name,
                       style: primaryTextStyle.copyWith(
                           fontSize: 18, fontWeight: semibold),
                     ),
                     Text(
-                      'Hiking',
+                      widget.product.category.name,
                       style: secondaryTextStyle.copyWith(fontSize: 12),
                     )
                   ],
                 ),
                 IconButton(
                   onPressed: () {
-                    setState(() {
-                      isWishlisted = !isWishlisted;
-                    });
+                    wishlistProvider.setProduct(widget.product);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                         isWishlisted
-                            ? 'This item has been added to your wishlist'
-                            : 'This item has been removed from your wishlist',
+                            ? 'This item has been removed to your wishlist'
+                            : 'This item has been added from your wishlist',
                         textAlign: TextAlign.center,
                         style: primaryTextStyle.copyWith(fontSize: 12),
                       ),
                       backgroundColor:
-                          isWishlisted ? secondaryColor : alertColor,
+                          isWishlisted ? alertColor : secondaryColor,
                       shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(6))),
@@ -271,7 +277,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     style: primaryTextStyle.copyWith(fontSize: 14),
                   ),
                   Text(
-                    '\$143.98',
+                    '\$${widget.product.price}',
                     style: priceTextStyle.copyWith(
                         fontSize: 16, fontWeight: semibold),
                   )
@@ -292,7 +298,7 @@ class _ProductScreenState extends State<ProductScreen> {
               height: 12,
             ),
             Text(
-              'Unpaved trails and mixed surfaces are easy when you have the traction and support you need. Casual enough for the daily commute.',
+              widget.product.description,
               style:
                   secondaryTextStyle.copyWith(fontSize: 14, fontWeight: light),
               textAlign: TextAlign.justify,
@@ -348,6 +354,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     height: 54,
                     child: FilledButton(
                         onPressed: () {
+                          cartProvider.addCart(widget.product);
                           showSuccessDialog();
                         },
                         style: FilledButton.styleFrom(
