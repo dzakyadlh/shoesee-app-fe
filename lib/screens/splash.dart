@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';

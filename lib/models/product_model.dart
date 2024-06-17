@@ -43,11 +43,11 @@ class ProductModel {
       'name': name,
       'price': price,
       'description': description,
-      'tags': tags,
+      'tags': tags.toString(),
       'category': category.toJson(),
       'gallery': gallery.map((e) => e.toJson()).toList(),
-      'createdAt': createdAt.toString(),
-      'updatedAt': updatedAt.toString(),
+      'created_at': createdAt.toString(),
+      'updated_at': updatedAt.toString(),
     };
   }
 
@@ -55,4 +55,19 @@ class ProductModel {
   String toString() {
     return toJson().toString();
   }
+}
+
+class UninitializedProductModel extends ProductModel {
+  UninitializedProductModel()
+      : super(
+          id: 0,
+          name: '',
+          price: 0.0,
+          description: '',
+          tags: null,
+          category: CategoryModel(id: 0, name: ''),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          gallery: [],
+        );
 }

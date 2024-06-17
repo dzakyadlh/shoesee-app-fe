@@ -40,8 +40,6 @@ class TransactionService {
       body: body,
     );
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       return true;
     } else {

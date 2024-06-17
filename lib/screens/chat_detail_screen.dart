@@ -1,12 +1,42 @@
 import 'package:e_commerce_app/components/chat_bubble.dart';
+import 'package:e_commerce_app/models/message_model.dart';
+import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
+import 'package:e_commerce_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
-class ChatDetailScreen extends StatelessWidget {
-  const ChatDetailScreen({super.key});
+class ChatDetailScreen extends StatefulWidget {
+  ChatDetailScreen({super.key, required this.product});
+
+  ProductModel product;
+
+  @override
+  State<ChatDetailScreen> createState() => _ChatDetailScreenState();
+}
+
+class _ChatDetailScreenState extends State<ChatDetailScreen> {
+  TextEditingController chatController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSend() async {
+      await MessageService().addMessage(
+        user: authProvider.user,
+        isFromUser: true,
+        message: chatController.text,
+        product: widget.product,
+      );
+
+      setState(() {
+        widget.product = UninitializedProductModel();
+        chatController.text = '';
+      });
+    }
+
     PreferredSizeWidget header() {
       return PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -72,8 +102,8 @@ class ChatDetailScreen extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                'assets/images/shoe_1.png',
+              child: Image.network(
+                widget.product.gallery[0].url,
                 width: 54,
                 height: 54,
                 fit: BoxFit.cover,
@@ -88,20 +118,27 @@ class ChatDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'COURT VISION',
+                    widget.product.name,
                     style: primaryTextStyle.copyWith(fontSize: 14),
                   ),
                   Text(
-                    '\$57.15',
+                    '\$${widget.product.price}',
                     style: priceTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
                   ),
                 ],
               ),
             ),
-            Image.asset(
-              'assets/images/btn_close.png',
-              width: 22,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  widget.product = UninitializedProductModel();
+                });
+              },
+              child: Image.asset(
+                'assets/images/btn_close.png',
+                width: 22,
+              ),
             )
           ],
         ),
@@ -109,81 +146,105 @@ class ChatDetailScreen extends StatelessWidget {
     }
 
     Widget chatInput() {
-      return Container(
-        color: backgroundTertiaryColor,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            productPreview(),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: backgroundSecondaryColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                        child: TextFormField(
-                      // controller: chatController,
-                      style: primaryTextStyle,
-                      decoration: InputDecoration.collapsed(
-                          hintText: 'Message', hintStyle: subtitleTextStyle),
-                    )),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    width: 45,
-                    height: 45,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          color: backgroundTertiaryColor,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              widget.product is UninitializedProductModel
+                  ? const SizedBox()
+                  : productPreview(),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: backgroundSecondaryColor,
                         borderRadius: BorderRadius.circular(12),
-                        color: primaryColor),
-                    child: Icon(
-                      Icons.send,
-                      color: primaryTextColor,
-                      size: 24,
+                      ),
+                      child: Center(
+                          child: TextFormField(
+                        controller: chatController,
+                        style: primaryTextStyle,
+                        decoration: InputDecoration.collapsed(
+                            hintText: 'Message', hintStyle: subtitleTextStyle),
+                      )),
                     ),
                   ),
-                )
-              ],
-            ),
-          ],
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      handleSend();
+                    },
+                    child: Container(
+                      width: 45,
+                      height: 45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: primaryColor),
+                      child: Icon(
+                        Icons.send,
+                        color: primaryTextColor,
+                        size: 24,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       );
     }
 
     Widget contents() {
-      return ListView(
-        padding: EdgeInsets.symmetric(
-          horizontal: defaultMargin,
-        ),
-        children: const [
-          ChatBubble(
-            chatText: 'Hi, is this item still available?',
-            isSender: true,
-            hasProduct: true,
-          ),
-          ChatBubble(
-            chatText:
-                'Good night. This item is only available with size 42 and 43',
-            isSender: false,
-          ),
-          ChatBubble(
-            chatText: 'Okay, I\'ll order the one with size 42',
-            isSender: true,
-          )
-        ],
+      return StreamBuilder<List<MessageModel>>(
+        stream:
+            MessageService().getMessagesByUserId(userId: authProvider.user.id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                children: [
+                  Text('Error: ${snapshot.error}'),
+                  Text('Error: ${snapshot.data}'),
+                ],
+              ),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('No messages yet'),
+            );
+          } else {
+            return ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: defaultMargin,
+              ),
+              children: snapshot.data!
+                  .map((MessageModel message) => ChatBubble(
+                        chatText: message.message,
+                        isSender: message.isFromUser,
+                        product: widget.product,
+                      ))
+                  .toList(),
+            );
+          }
+        },
       );
     }
 

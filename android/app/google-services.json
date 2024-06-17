@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "529361243629",
+    "firebase_url": "https://shoe-commerce-app-default-rtdb.firebaseio.com",
+    "project_id": "shoe-commerce-app",
+    "storage_bucket": "shoe-commerce-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529361243629:android:c4bd33512af5ee5de4ebe4",
+        "android_client_info": {
+          "package_name": "com.dzakyadlh.e_commerce_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-qz2cfi9f859KnRTvxzCJRAfseGQMhks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

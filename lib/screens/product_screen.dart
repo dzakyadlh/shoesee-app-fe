@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
+import 'package:e_commerce_app/screens/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:provider/provider.dart';
@@ -332,7 +333,13 @@ class _ProductScreenState extends State<ProductScreen> {
             Row(
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ChatDetailScreen(product: widget.product)));
+                  },
                   child: Container(
                     width: 54,
                     height: 54,

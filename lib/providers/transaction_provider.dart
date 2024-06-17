@@ -18,7 +18,6 @@ class TransactionProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print(e);
       return false;
     }
   }
