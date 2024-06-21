@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/components/custom_buttons.dart';
 import 'package:e_commerce_app/components/wishlist_tile.dart';
+import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
@@ -13,11 +14,10 @@ class WishlistScreen extends StatefulWidget {
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  final List<String> wishlists = ['a'];
-
   @override
   Widget build(BuildContext context) {
     WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+    ScreenProvider screenProvider = Provider.of(context);
 
     Widget header() {
       return AppBar(
@@ -64,7 +64,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
               buttonHeight: 44,
               buttonText: 'Explore Store',
               buttonTextSize: 16,
-              onPressed: () {})
+              onPressed: () {
+                screenProvider.currentIndex = 0;
+              })
         ],
       ));
     }
@@ -86,7 +88,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
     return Container(
       color: backgroundTertiaryColor,
       child: Column(
-        children: [header(), wishlists == [] ? emptyWishlist() : contents()],
+        children: [
+          header(),
+          wishlistProvider.wishlist.isEmpty ? emptyWishlist() : contents()
+        ],
       ),
     );
   }

@@ -1,9 +1,11 @@
+import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/screens/main/chat_screen.dart';
 import 'package:e_commerce_app/screens/main/home_screen.dart';
 import 'package:e_commerce_app/screens/main/profile_screen.dart';
 import 'package:e_commerce_app/screens/main/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,8 +15,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
-
   final List _pages = [
     const HomeScreen(),
     const ChatScreen(),
@@ -24,6 +24,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenProvider screenProvider = Provider.of(context);
+
     Widget cartButton() {
       return FloatingActionButton(
         onPressed: () {
@@ -54,11 +56,9 @@ class _MainScreenState extends State<MainScreen> {
                 type: BottomNavigationBarType.fixed,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
-                currentIndex: currentIndex,
+                currentIndex: screenProvider.currentIndex,
                 onTap: (value) {
-                  setState(() {
-                    currentIndex = value;
-                  });
+                  screenProvider.currentIndex = value;
                 },
                 items: [
                   BottomNavigationBarItem(
@@ -68,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.home,
                           size: 24,
-                          color: currentIndex == 0
+                          color: screenProvider.currentIndex == 0
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -80,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.chat,
                           size: 24,
-                          color: currentIndex == 1
+                          color: screenProvider.currentIndex == 1
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -92,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.favorite,
                           size: 24,
-                          color: currentIndex == 2
+                          color: screenProvider.currentIndex == 2
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -104,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.person,
                           size: 24,
-                          color: currentIndex == 3
+                          color: screenProvider.currentIndex == 3
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -116,13 +116,14 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      backgroundColor:
-          currentIndex == 0 ? backgroundPrimaryColor : backgroundTertiaryColor,
+      backgroundColor: screenProvider.currentIndex == 0
+          ? backgroundPrimaryColor
+          : backgroundTertiaryColor,
       resizeToAvoidBottomInset: false,
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: customBottomNav(),
-      body: SafeArea(child: _pages[currentIndex]),
+      body: SafeArea(child: _pages[screenProvider.currentIndex]),
     );
   }
 }

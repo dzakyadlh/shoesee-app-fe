@@ -44,7 +44,7 @@ class ProductModel {
       'price': price,
       'description': description,
       'tags': tags.toString(),
-      'category': category.toJson(),
+      'categories': category.toJson(),
       'gallery': gallery.map((e) => e.toJson()).toList(),
       'created_at': createdAt.toString(),
       'updated_at': updatedAt.toString(),

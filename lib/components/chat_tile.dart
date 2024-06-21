@@ -1,10 +1,34 @@
+import 'package:e_commerce_app/models/message_model.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 
 class ChatTile extends StatelessWidget {
-  const ChatTile({super.key});
+  const ChatTile({super.key, required this.message});
+
+  final MessageModel message;
+
+  lastToDate() {
+    DateTime today = DateTime.now();
+    int difference = today.difference(message.createdAt).inDays;
+    DateTime firstDayOfNextMonth = (today.month < 12)
+        ? DateTime(today.year, today.month + 1, 1)
+        : DateTime(today.year + 1, 1, 1);
+    int daysThisMonth =
+        firstDayOfNextMonth.subtract(const Duration(days: 1)).day;
+    if (difference == 0) {
+      return 'Today';
+    } else if (difference == 1) {
+      return 'Yesterday';
+    } else if (difference < daysThisMonth) {
+      return '$difference + days ago';
+    } else if (difference > 365) {
+      return 'More than a year ago';
+    } else if (difference > daysThisMonth) {
+      return 'More than a month ago';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +69,7 @@ class ChatTile extends StatelessWidget {
                     style: primaryTextStyle.copyWith(fontSize: 15),
                   ),
                   Text(
-                    'Good Night, This item is on sale right now',
+                    message.message,
                     style: secondaryTextStyle.copyWith(
                         fontSize: 14, fontWeight: light),
                     overflow: TextOverflow.ellipsis,
@@ -57,7 +81,7 @@ class ChatTile extends StatelessWidget {
               width: 12,
             ),
             Text(
-              'Now',
+              '${lastToDate()}',
               style: secondaryTextStyle.copyWith(fontSize: 10),
             )
           ],

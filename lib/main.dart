@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
+import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:e_commerce_app/providers/transaction_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => WishlistProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => TransactionProvider()),
+        ChangeNotifierProvider(create: (context) => ScreenProvider()),
       ],
       child: MaterialApp(
         title: 'E-commerce App',

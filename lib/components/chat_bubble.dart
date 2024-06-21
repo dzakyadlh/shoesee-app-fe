@@ -1,7 +1,9 @@
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble(
@@ -16,6 +18,8 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+
     Widget productPreview() {
       return Container(
         width: 230,
@@ -32,12 +36,12 @@ class ChatBubble extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/images/shoe_1.png',
+                  child: Image.network(
+                    product.gallery[0].url,
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
@@ -52,14 +56,16 @@ class ChatBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'COURT VISION 2.0 SHOES',
+                        product.name,
                         style: primaryTextStyle.copyWith(fontSize: 14),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(
                         height: 4,
                       ),
                       Text(
-                        '\$57.15',
+                        '\$${product.price}',
                         style: priceTextStyle.copyWith(
                             fontSize: 14, fontWeight: medium),
                       ),
@@ -74,7 +80,9 @@ class ChatBubble extends StatelessWidget {
             Row(
               children: [
                 OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      cartProvider.addCart(product);
+                    },
                     style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         side: BorderSide(color: primaryColor),

@@ -120,6 +120,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   Text(
                     widget.product.name,
                     style: primaryTextStyle.copyWith(fontSize: 14),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   Text(
                     '\$${widget.product.price}',
@@ -239,7 +241,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   .map((MessageModel message) => ChatBubble(
                         chatText: message.message,
                         isSender: message.isFromUser,
-                        product: widget.product,
+                        product: message.product,
                       ))
                   .toList(),
             );
