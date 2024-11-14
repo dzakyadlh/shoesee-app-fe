@@ -1,6 +1,8 @@
 
 ---
 
+<img src="assets/images/splash.png" alt="logo" width="300" />
+
 # Shoesee: Shoes E-commerce Mobile App
 
 **Shoesee** is a mobile e-commerce app built with Flutter, Laravel, and MySQL, designed for seamless user experiences in buying and selling shoes. The app includes modern e-commerce features such as real-time chat, wishlists, and a shopping cart.
@@ -116,21 +118,10 @@ mobile_app/
 
 ## Screenshots
 
-### 1. **Home Screen**
-
-![home_screen](assets/screenshots/home_screen.png)
-
-### 2. **Product Details**
-
-![product_details](assets/screenshots/product_details.png)
-
-### 3. **Cart**
-
-![cart_screen](assets/screenshots/cart_screen.png)
-
-### 4. **Real-time Chat**
-
-![chat_screen](assets/screenshots/chat_screen.png)
+| ![home_screen](assets/docs/home.png) | ![product detail screen](assets/docs/chat.png) | ![wishlist_screen](assets/docs/wishlist.png) |
+|--------------------------------------------------|---------------------------------------------------|------------------------------------------------------------|
+| ![cart screen](assets/docs/cart.png) | ![checkout screen](assets/docs/checkout.png) | ![chat](assets/docs/chat.png) |
+| ![chat detail](assets/docs/chatdetail.png) | ![profile screen](assets/docs/profile.png)
 
 ## API Endpoints
 
