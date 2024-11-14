@@ -13,6 +13,24 @@ class ProfileScreen extends StatelessWidget {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     UserModel user = authProvider.user;
 
+    Future<void> handleLogout() async {
+      try {
+        await authProvider.logout();
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/landing', (route) => false);
+      } catch (e) {
+        ScaffoldMessenger(
+          child: Text(
+            'Failed to logout: $e',
+            style: primaryTextStyle.copyWith(
+              fontSize: 14,
+              fontWeight: semibold,
+            ),
+          ),
+        );
+      }
+    }
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundSecondaryColor,
@@ -51,8 +69,7 @@ class ProfileScreen extends StatelessWidget {
               )),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/landing', (route) => false);
+                  handleLogout();
                 },
                 child: Image.asset(
                   'assets/images/exit_button.png',
