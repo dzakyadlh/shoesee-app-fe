@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
         onPressed: () {
           Navigator.pushNamed(context, '/cart');
         },
-        backgroundColor: secondaryColor,
+        backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         child: Icon(
           Icons.shopping_cart,
@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         child: BottomAppBar(
           shape: const CircularNotchedRectangle(),
-          color: backgroundFourthColor,
+          color: backgroundSecondaryColor,
           notchMargin: 10,
           clipBehavior: Clip.antiAlias,
           child: Wrap(children: [
@@ -116,9 +116,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      backgroundColor: screenProvider.currentIndex == 0
-          ? backgroundPrimaryColor
-          : backgroundTertiaryColor,
+      backgroundColor: backgroundSecondaryColor,
       resizeToAvoidBottomInset: false,
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

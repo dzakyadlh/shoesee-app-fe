@@ -23,8 +23,9 @@ class _CartTileState extends State<CartTile> {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       margin: EdgeInsets.only(top: defaultMargin),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: backgroundFourthColor),
+        borderRadius: BorderRadius.circular(12),
+        color: backgroundSecondaryColor,
+      ),
       child: Column(
         children: [
           Row(

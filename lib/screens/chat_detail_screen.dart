@@ -42,7 +42,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         preferredSize: const Size.fromHeight(70),
         child: AppBar(
           foregroundColor: primaryTextColor,
-          backgroundColor: backgroundPrimaryColor,
+          backgroundColor: backgroundSecondaryColor,
           centerTitle: false,
           elevation: 1,
           title: Row(

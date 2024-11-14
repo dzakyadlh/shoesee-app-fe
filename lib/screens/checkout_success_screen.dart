@@ -10,11 +10,11 @@ class CheckoutSuccessScreen extends StatelessWidget {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
           child: AppBar(
-            backgroundColor: backgroundPrimaryColor,
+            backgroundColor: backgroundSecondaryColor,
             title: Text(
               'Checkout Success',
               style:
-                  primaryTextStyle.copyWith(fontSize: 18, fontWeight: medium),
+                  primaryTextStyle.copyWith(fontSize: 18, fontWeight: semibold),
             ),
             centerTitle: true,
             elevation: 0,
@@ -37,14 +37,14 @@ class CheckoutSuccessScreen extends StatelessWidget {
             Text(
               'You made a transaction!',
               style:
-                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: medium),
+                  primaryTextStyle.copyWith(fontSize: 16, fontWeight: semibold),
             ),
             const SizedBox(
               height: 12,
             ),
             Text(
               'Stay at home while we\nprepare your dream shoes',
-              style: secondaryTextStyle.copyWith(fontSize: 14),
+              style: subtitleTextStyle.copyWith(fontSize: 14),
               textAlign: TextAlign.center,
             ),
             Container(
@@ -63,7 +63,7 @@ class CheckoutSuccessScreen extends StatelessWidget {
                   child: Text(
                     'Order Other Shoes',
                     style: primaryTextStyle.copyWith(
-                        fontSize: 16, fontWeight: medium),
+                        fontSize: 16, fontWeight: bold),
                   )),
             ),
             Container(
@@ -79,7 +79,7 @@ class CheckoutSuccessScreen extends StatelessWidget {
                   child: Text(
                     'View Order',
                     style: primaryTextStyle.copyWith(
-                        fontSize: 16, fontWeight: medium),
+                        fontSize: 16, fontWeight: bold),
                   )),
             ),
           ],
@@ -89,7 +89,7 @@ class CheckoutSuccessScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: header(),
-        backgroundColor: backgroundTertiaryColor,
+        backgroundColor: backgroundPrimaryColor,
         resizeToAvoidBottomInset: false,
         body: SafeArea(child: contents()));
   }

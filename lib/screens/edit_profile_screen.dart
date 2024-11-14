@@ -34,7 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 color: primaryTextColor,
                 size: 24,
               )),
-          backgroundColor: backgroundPrimaryColor,
+          backgroundColor: backgroundTertiaryColor,
           elevation: 0,
           centerTitle: true,
           title: Text(
@@ -121,7 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundTertiaryColor,
+      backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
       appBar: header(),
       body: SafeArea(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class ProductProvider with ChangeNotifier {
   List<ProductModel> _products = [];
+  List<ProductModel> _filteredProducts = [];
 
   List<ProductModel> get products => _products;
 
@@ -20,5 +21,17 @@ class ProductProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('Fetching error: $e');
     }
+  }
+
+  void filterProductsByCategory(int categoryId) {
+    _filteredProducts = _products
+        .where((product) => product.category.id == categoryId)
+        .toList();
+    notifyListeners();
+  }
+
+  void clearFilter() {
+    _filteredProducts = [];
+    notifyListeners();
   }
 }

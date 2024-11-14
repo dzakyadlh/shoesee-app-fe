@@ -25,23 +25,25 @@ class _SignupScreenState extends State<SignupScreen> {
   String password = '';
   bool isLoading = false;
 
-  @override
-  Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+  Future<void> signup() async {
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
 
-    signup() async {
-      setState(() {
-        isLoading = true;
-      });
+    setState(() {
+      isLoading = true;
+    });
 
-      if (await authProvider.register(
-        name: nameController.text,
-        username: usernameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-      )) {
+    if (await authProvider.register(
+      name: nameController.text,
+      username: usernameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+    )) {
+      if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-      } else {
+      }
+    } else {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
           content: const Text(
@@ -50,12 +52,15 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
         ));
       }
-
-      setState(() {
-        isLoading = false;
-      });
     }
 
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Widget header() {
       return Container(
         alignment: Alignment.centerLeft,

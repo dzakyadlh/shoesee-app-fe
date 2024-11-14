@@ -23,7 +23,7 @@ class _CartScreenState extends State<CartScreen> {
           preferredSize: const Size.fromHeight(70),
           child: AppBar(
             foregroundColor: primaryTextColor,
-            backgroundColor: backgroundPrimaryColor,
+            backgroundColor: backgroundSecondaryColor,
             clipBehavior: Clip.antiAlias,
             elevation: 0,
             title: Text(
@@ -101,10 +101,8 @@ class _CartScreenState extends State<CartScreen> {
         Column(
           children: [
             Container(
-              margin: EdgeInsets.only(
-                  bottom: defaultMargin,
-                  right: defaultMargin,
-                  left: defaultMargin),
+              margin:
+                  EdgeInsets.only(right: defaultMargin, left: defaultMargin),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -125,9 +123,15 @@ class _CartScreenState extends State<CartScreen> {
               color: Color(0xFF2B2938),
             ),
             Container(
-              margin: EdgeInsets.all(defaultMargin),
+              margin: EdgeInsets.only(
+                left: defaultMargin,
+                right: defaultMargin,
+                bottom: defaultMargin,
+                top: 16,
+              ),
               width: double.infinity,
               height: 50,
+              color: backgroundSecondaryColor,
               child: FilledButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/checkout');
@@ -159,7 +163,7 @@ class _CartScreenState extends State<CartScreen> {
 
     return Scaffold(
       appBar: header(),
-      backgroundColor: backgroundTertiaryColor,
+      backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
       body: cartProvider.carts.isEmpty ? emptyCart() : contents(),
       bottomNavigationBar:

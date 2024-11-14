@@ -15,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
     Widget header() {
       return AppBar(
-        backgroundColor: backgroundPrimaryColor,
+        backgroundColor: backgroundSecondaryColor,
         automaticallyImplyLeading: false,
         elevation: 0,
         flexibleSpace: SafeArea(
@@ -25,13 +25,12 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipOval(
-                child: Image.network(
-                  user.photoUrl.toString(),
-                  width: 64,
-                  height: 64,
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  child: Image.asset(
+                'assets/images/profile_pic_default.png',
+                width: 64,
+                height: 64,
+                fit: BoxFit.cover,
+              )),
               const SizedBox(
                 width: 16,
               ),
@@ -53,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamedAndRemoveUntil(
-                      context, '/sign_in', (route) => false);
+                      context, '/landing', (route) => false);
                 },
                 child: Image.asset(
                   'assets/images/exit_button.png',
@@ -108,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
     }
 
     return Container(
-      color: backgroundTertiaryColor,
+      color: backgroundPrimaryColor,
       child: Column(
         children: [header(), settings()],
       ),

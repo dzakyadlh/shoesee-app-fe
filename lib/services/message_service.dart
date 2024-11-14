@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/models/message_model.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/models/user_model.dart';
+import 'package:flutter/material.dart';
 
 class MessageService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -15,7 +16,6 @@ class MessageService {
           .map((QuerySnapshot list) {
         var result = list.docs.map<MessageModel>((DocumentSnapshot message) {
           var data = message.data() as Map<String, dynamic>;
-          print("Data fetched: $data");
           return MessageModel.fromJson(data);
         }).toList();
 
@@ -25,7 +25,7 @@ class MessageService {
         return result;
       });
     } catch (e) {
-      print("Error in getMessagesByUserId: $e");
+      debugPrint("Error in getMessagesByUserId: $e");
       throw Exception(e);
     }
   }
@@ -48,7 +48,7 @@ class MessageService {
         'updatedAt': DateTime.now().toString(),
       });
     } catch (e) {
-      print("Failed to send message: $e");
+      debugPrint("Failed to send message: $e");
       throw Exception('Failed to send message');
     }
   }

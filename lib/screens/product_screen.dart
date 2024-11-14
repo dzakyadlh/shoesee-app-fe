@@ -110,6 +110,35 @@ class _ProductScreenState extends State<ProductScreen> {
               ));
     }
 
+    PreferredSizeWidget topBar() {
+      return PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.chevron_left,
+                  color: backgroundPrimaryColor,
+                  size: 24,
+                )),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/cart');
+                  },
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: backgroundPrimaryColor,
+                    size: 24,
+                  ))
+            ],
+          ));
+    }
+
     Widget indicator(int index) {
       return Container(
         width: currentIndex == index ? 16 : 4,
@@ -125,39 +154,12 @@ class _ProductScreenState extends State<ProductScreen> {
     Widget header() {
       return Column(
         children: [
-          Container(
-            margin: const EdgeInsets.only(top: 20, right: 20, left: 20),
-            color: Colors.transparent,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.chevron_left,
-                      color: backgroundPrimaryColor,
-                      size: 24,
-                    )),
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/cart');
-                    },
-                    icon: Icon(
-                      Icons.shopping_cart,
-                      color: backgroundPrimaryColor,
-                      size: 24,
-                    ))
-              ],
-            ),
-          ),
           CarouselSlider(
               items: widget.product.gallery
                   .map((img) => Image.network(
                         img.url,
                         width: MediaQuery.of(context).size.width,
-                        height: 310,
+                        height: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover,
                       ))
                   .toList(),
@@ -218,7 +220,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     Text(
                       widget.product.category.name,
-                      style: secondaryTextStyle.copyWith(fontSize: 12),
+                      style: subtitleTextStyle.copyWith(fontSize: 12),
                     )
                   ],
                 ),
@@ -233,8 +235,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         textAlign: TextAlign.center,
                         style: primaryTextStyle.copyWith(fontSize: 12),
                       ),
-                      backgroundColor:
-                          isWishlisted ? alertColor : secondaryColor,
+                      backgroundColor: isWishlisted ? alertColor : primaryColor,
                       shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(6))),
@@ -250,9 +251,8 @@ class _ProductScreenState extends State<ProductScreen> {
                     size: 20,
                   ),
                   style: IconButton.styleFrom(
-                      backgroundColor: isWishlisted
-                          ? secondaryColor
-                          : const Color(0xFF423F53),
+                      backgroundColor:
+                          isWishlisted ? primaryColor : const Color(0xFF423F53),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50))),
                 )
@@ -267,7 +267,7 @@ class _ProductScreenState extends State<ProductScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(8),
                 color: backgroundSecondaryColor,
               ),
               child: Row(
@@ -301,7 +301,7 @@ class _ProductScreenState extends State<ProductScreen> {
             Text(
               widget.product.description,
               style:
-                  secondaryTextStyle.copyWith(fontSize: 14, fontWeight: light),
+                  subtitleTextStyle.copyWith(fontSize: 14, fontWeight: light),
               textAlign: TextAlign.justify,
             ),
             const SizedBox(
@@ -383,8 +383,16 @@ class _ProductScreenState extends State<ProductScreen> {
     }
 
     return Scaffold(
-      body:
-          ListView(padding: EdgeInsets.zero, children: [header(), contents()]),
+      appBar: topBar(),
+      backgroundColor: const Color.fromARGB(255, 236, 237, 239),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [header(), contents()],
+          ),
+        ),
+      ),
     );
   }
 }

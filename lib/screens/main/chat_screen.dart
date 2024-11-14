@@ -23,7 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     Widget header() {
       return AppBar(
-        backgroundColor: backgroundPrimaryColor,
+        backgroundColor: backgroundSecondaryColor,
         centerTitle: true,
         title: Text(
           'Message Support',
@@ -37,7 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Widget emptyChat() {
       return Expanded(
           child: Container(
-        color: backgroundTertiaryColor,
+        color: backgroundPrimaryColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,23 +82,35 @@ class _ChatScreenState extends State<ChatScreen> {
         stream:
             MessageService().getMessagesByUserId(userId: authProvider.user.id),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show a loading indicator while data is loading
+            return Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color:
+                      secondaryColor, // You can customize the color as needed
+                ),
+              ),
+            );
+          } else if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
               return emptyChat();
             }
             return Expanded(
-                child: Container(
-              padding: EdgeInsets.all(defaultMargin),
-              color: backgroundTertiaryColor,
-              child: Column(
-                children: [
-                  ChatTile(
-                    message: snapshot.data![snapshot.data!.length - 1],
-                  )
-                ],
+              child: Container(
+                padding: EdgeInsets.all(defaultMargin),
+                color: backgroundPrimaryColor,
+                child: Column(
+                  children: [
+                    ChatTile(
+                      message: snapshot.data![snapshot.data!.length - 1],
+                    )
+                  ],
+                ),
               ),
-            ));
+            );
           } else {
+            // Handle error or show empty state if needed
             return emptyChat();
           }
         },
@@ -106,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     return Container(
-      color: backgroundTertiaryColor,
+      color: backgroundPrimaryColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [header(), contents()],

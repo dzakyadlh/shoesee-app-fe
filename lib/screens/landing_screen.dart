@@ -29,7 +29,15 @@ class LandingScreen extends StatelessWidget {
               'Level up your confidence with our amazing shoes',
               textAlign: TextAlign.center,
               style:
-                  primaryTextStyle.copyWith(fontSize: 25, fontWeight: semibold),
+                  primaryTextStyle.copyWith(fontSize: 24, fontWeight: semibold),
+            ),
+            const SizedBox(
+              height: 16.0,
+            ),
+            Text(
+              'Shoesee provides you with a whole list of shoes that are on trend in the world',
+              textAlign: TextAlign.center,
+              style: subtitleTextStyle.copyWith(fontSize: 14),
             ),
             const SizedBox(
               height: 16.0,

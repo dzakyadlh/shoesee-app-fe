@@ -54,7 +54,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
           child: AppBar(
-            backgroundColor: backgroundPrimaryColor,
+            backgroundColor: backgroundSecondaryColor,
             foregroundColor: primaryTextColor,
             title: Text(
               'Checkout Details',
@@ -71,7 +71,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: backgroundFourthColor),
+            color: backgroundSecondaryColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -118,7 +118,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         Text(
                           'Store Location',
-                          style: secondaryTextStyle.copyWith(
+                          style: subtitleTextStyle.copyWith(
                               fontSize: 12, fontWeight: light),
                         ),
                         Text(
@@ -134,7 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           children: [
                             Text(
                               'Your Address',
-                              style: secondaryTextStyle.copyWith(
+                              style: subtitleTextStyle.copyWith(
                                   fontSize: 12, fontWeight: light),
                             ),
                             Text(
@@ -160,8 +160,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         margin: EdgeInsets.only(bottom: defaultMargin),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: backgroundFourthColor),
+          borderRadius: BorderRadius.circular(12),
+          color: backgroundSecondaryColor,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -177,7 +178,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Product Quantity',
-                    style: secondaryTextStyle.copyWith(fontSize: 12)),
+                    style: subtitleTextStyle.copyWith(fontSize: 12)),
                 Text(
                   '${cartProvider.totalItems()} Items',
                   style: primaryTextStyle.copyWith(
@@ -192,7 +193,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Product Price',
-                    style: secondaryTextStyle.copyWith(fontSize: 12)),
+                    style: subtitleTextStyle.copyWith(fontSize: 12)),
                 Text(
                   '\$${cartProvider.totalPrice()}',
                   style: primaryTextStyle.copyWith(
@@ -207,7 +208,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Shipping',
-                    style: secondaryTextStyle.copyWith(fontSize: 12)),
+                    style: subtitleTextStyle.copyWith(fontSize: 12)),
                 Text(
                   shippingPrice == 0 ? 'Free' : '\$$shippingPrice',
                   style: primaryTextStyle.copyWith(
@@ -306,7 +307,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: backgroundTertiaryColor,
+      backgroundColor: backgroundPrimaryColor,
       appBar: header(),
       body: contents(),
     );

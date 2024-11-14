@@ -33,4 +33,9 @@ class UserModel {
       'token': token,
     };
   }
+
+  @override
+  String toString() {
+    return 'UserModel{id: $id, name: $name, email: $email, username: $username, photoUrl: $photoUrl, token: $token}';
+  }
 }

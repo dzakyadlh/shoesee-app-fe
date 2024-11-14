@@ -19,7 +19,7 @@ class SettingsTile extends StatelessWidget {
           children: [
             Text(
               settingsText,
-              style: secondaryTextStyle.copyWith(fontSize: 13),
+              style: subtitleTextStyle.copyWith(fontSize: 13),
             ),
             Icon(
               Icons.navigate_next,

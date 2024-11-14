@@ -10,7 +10,10 @@ class CheckoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundFourthColor,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: backgroundSecondaryColor,
+      ),
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       child: Row(
@@ -49,7 +52,7 @@ class CheckoutCard extends StatelessWidget {
           ),
           Text(
             '${cartItem.quantity} items',
-            style: secondaryTextStyle.copyWith(fontSize: 12),
+            style: subtitleTextStyle.copyWith(fontSize: 12),
           )
         ],
       ),

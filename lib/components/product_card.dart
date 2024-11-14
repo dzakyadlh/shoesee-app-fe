@@ -23,7 +23,6 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: 215,
         height: 278,
-        margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: const Color(0xFFECEDEF),
@@ -59,7 +58,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   Text(
                     product.name,
-                    style: subtitleTextStyle.copyWith(
+                    style: secondaryTextStyle.copyWith(
                         fontSize: 18, fontWeight: semibold),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -69,8 +68,8 @@ class ProductCard extends StatelessWidget {
                   ),
                   Text(
                     '\$${product.price}',
-                    style: priceTextStyle.copyWith(
-                        fontSize: 14, fontWeight: medium),
+                    style:
+                        priceTextStyle.copyWith(fontSize: 14, fontWeight: bold),
                   ),
                 ],
               ),

@@ -21,7 +21,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
     Widget header() {
       return AppBar(
-        backgroundColor: backgroundPrimaryColor,
+        backgroundColor: backgroundSecondaryColor,
         centerTitle: true,
         title: Text(
           'Favorite Shoes',
@@ -40,7 +40,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
         children: [
           Icon(
             Icons.favorite,
-            color: secondaryColor,
+            color: primaryColor,
             size: 80,
           ),
           const SizedBox(
@@ -55,7 +55,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
           ),
           Text(
             'Let\'s find your favorite shoes',
-            style: secondaryTextStyle.copyWith(fontSize: 14),
+            style: subtitleTextStyle.copyWith(fontSize: 14),
           ),
           const SizedBox(
             height: 20,
@@ -86,7 +86,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     }
 
     return Container(
-      color: backgroundTertiaryColor,
+      color: backgroundPrimaryColor,
       child: Column(
         children: [
           header(),

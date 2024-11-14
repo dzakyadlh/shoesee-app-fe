@@ -16,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedCategory = 0;
+
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
@@ -26,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget header() {
       return Container(
+        padding: EdgeInsets.symmetric(horizontal: defaultMargin),
         margin: const EdgeInsets.only(top: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,11 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               width: 54,
               height: 54,
-              decoration: BoxDecoration(
-                  color: secondaryColor,
+              decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(user.photoUrl.toString()))),
+                      image:
+                          AssetImage('assets/images/profile_pic_default.png'))),
             )
           ],
         ),
@@ -65,15 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     Widget categorySlider() {
-      int currentCategory = 0;
-
       final List<String> categories = [
         'All Shoes',
-        'Running',
-        'Training',
-        'Basketball',
+        'Sport',
         'Hiking',
-        'Casual'
+        'Basketball',
+        'Training',
+        'Running',
       ];
 
       return Container(
@@ -88,25 +89,36 @@ class _HomeScreenState extends State<HomeScreen> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    currentCategory = index;
+                    _selectedCategory = index;
                   });
+                  if (_selectedCategory == 0) {
+                    productProvider.clearFilter();
+                  } else {
+                    productProvider.filterProductsByCategory(_selectedCategory);
+                  }
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(right: 16),
+                  margin: index == 0
+                      ? EdgeInsets.only(left: defaultMargin)
+                      : const EdgeInsets.only(left: 16),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
-                      border: Border.all(color: subtitleTextColor),
-                      borderRadius: BorderRadius.circular(12),
-                      color: currentCategory == index
-                          ? primaryColor
-                          : Colors.transparent),
+                    border: Border.all(color: secondaryTextColor),
+                    borderRadius: BorderRadius.circular(12),
+                    color: _selectedCategory == index
+                        ? primaryColor
+                        : Colors.transparent,
+                  ),
                   child: Text(
                     categories[index],
-                    style: (currentCategory == index
+                    style: (_selectedCategory == index
                             ? primaryTextStyle
                             : subtitleTextStyle)
-                        .copyWith(fontSize: 13, fontWeight: medium),
+                        .copyWith(
+                      fontSize: 13,
+                      fontWeight: semibold,
+                    ),
                   ),
                 ),
               );
@@ -120,10 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
       return Container(
         margin: EdgeInsets.only(top: defaultMargin),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Popular Products',
-            style:
-                primaryTextStyle.copyWith(fontSize: 22, fontWeight: semibold),
+          Padding(
+            padding: EdgeInsets.only(left: defaultMargin),
+            child: Text(
+              'Popular Products',
+              style:
+                  primaryTextStyle.copyWith(fontSize: 22, fontWeight: semibold),
+            ),
           ),
           const SizedBox(
             height: 14,
@@ -135,7 +150,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: products.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (_, index) {
-                  return GestureDetector(
+                  return Container(
+                      margin: index == 0
+                          ? EdgeInsets.only(left: defaultMargin)
+                          : const EdgeInsets.only(left: 16),
                       child: ProductCard(product: products[index]));
                 }),
           )
@@ -145,7 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget newArrivals() {
       return Container(
-        margin: EdgeInsets.only(top: defaultMargin),
+        margin: EdgeInsets.only(
+            top: defaultMargin, left: defaultMargin, right: defaultMargin),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -158,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ListView.builder(
                 shrinkWrap: true,
                 itemCount: products.length,
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, index) {
                   return GestureDetector(
                       child: ProductTile(product: products[index]));
@@ -172,7 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: defaultMargin),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

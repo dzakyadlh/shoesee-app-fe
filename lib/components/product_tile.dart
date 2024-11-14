@@ -45,7 +45,7 @@ class ProductTile extends StatelessWidget {
               children: [
                 Text(
                   product.category.name,
-                  style: secondaryTextStyle.copyWith(fontSize: 12),
+                  style: subtitleTextStyle.copyWith(fontSize: 12),
                 ),
                 const SizedBox(
                   height: 6,

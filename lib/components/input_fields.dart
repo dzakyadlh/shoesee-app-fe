@@ -59,13 +59,15 @@ class _CustomFormFieldState extends State<CustomFormField> {
                   ),
                   Expanded(
                       child: TextFormField(
-                          controller: widget.controller,
-                          style: primaryTextStyle,
-                          obscureText: widget.isObscured,
-                          decoration: InputDecoration.collapsed(
-                              hintText: widget.hintText,
-                              hintStyle: subtitleTextStyle),
-                          validator: widget.validator))
+                    controller: widget.controller,
+                    style: primaryTextStyle,
+                    obscureText: widget.isObscured,
+                    decoration: InputDecoration.collapsed(
+                        hintText: widget.hintText,
+                        hintStyle: subtitleTextStyle),
+                    validator: widget.validator,
+                    cursorColor: primaryColor,
+                  ))
                 ],
               )),
             ),
