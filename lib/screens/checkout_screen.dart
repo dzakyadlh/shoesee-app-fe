@@ -6,39 +6,37 @@ import 'package:e_commerce_app/providers/transaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:flutter_dash/flutter_dash.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CheckoutScreen extends StatefulWidget {
+class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
-    TransactionProvider transactionProvider =
-        Provider.of<TransactionProvider>(context);
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
     String address = 'Tokyo';
     double shippingPrice = 0.0;
 
-    handleCheckout() async {
+    Future<void> handleCheckout() async {
       setState(() {
         isLoading = true;
       });
-      if (await transactionProvider.checkout(
-          authProvider.user.token.toString(),
-          cartProvider.carts,
+      if (await ref.read(transactionNotifierProvider.notifier).checkout(
+          ref.watch(authNotifierProvider).value!.token.toString(),
+          ref.watch(cartNotifierProvider).value!,
           address,
-          cartProvider.totalPrice(),
+          ref.read(cartNotifierProvider.notifier).totalPrice() as double,
           shippingPrice)) {
-        cartProvider.carts = [];
+        for (var product in ref.watch(cartNotifierProvider).value!) {
+          ref.read(cartNotifierProvider.notifier).removeCartProduct(
+              ref.watch(authNotifierProvider).value!.token!, product.productId);
+        }
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/checkout-success',
@@ -180,7 +178,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Text('Product Quantity',
                     style: subtitleTextStyle.copyWith(fontSize: 12)),
                 Text(
-                  '${cartProvider.totalItems()} Items',
+                  '${ref.read(cartNotifierProvider.notifier).totalItems()} Items',
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: medium),
                 )
@@ -195,7 +193,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Text('Product Price',
                     style: subtitleTextStyle.copyWith(fontSize: 12)),
                 Text(
-                  '\$${cartProvider.totalPrice()}',
+                  '\$${ref.read(cartNotifierProvider.notifier).totalPrice()}',
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: medium),
                 )
@@ -234,7 +232,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       fontSize: 14, fontWeight: semibold),
                 ),
                 Text(
-                  '\$${cartProvider.totalPrice() + shippingPrice}',
+                  '\$${(ref.read(cartNotifierProvider.notifier).totalPrice() as double) + shippingPrice}',
                   style: priceTextStyle.copyWith(
                       fontSize: 14, fontWeight: semibold),
                 ),
@@ -284,7 +282,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 height: 12,
               ),
               Column(
-                children: cartProvider.carts
+                children: ref
+                    .watch(cartNotifierProvider)
+                    .value!
                     .map((product) => CheckoutCard(
                           cartItem: product,
                         ))

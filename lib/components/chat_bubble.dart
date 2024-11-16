@@ -1,11 +1,12 @@
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends ConsumerWidget {
   const ChatBubble(
       {super.key,
       required this.chatText,
@@ -17,9 +18,7 @@ class ChatBubble extends StatelessWidget {
   final ProductModel product;
 
   @override
-  Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
-
+  Widget build(BuildContext context, WidgetRef ref) {
     Widget productPreview() {
       return Container(
         width: 230,
@@ -81,7 +80,10 @@ class ChatBubble extends StatelessWidget {
               children: [
                 OutlinedButton(
                     onPressed: () {
-                      cartProvider.addCart(product);
+                      ref.read(cartNotifierProvider.notifier).updateCartProduct(
+                          ref.watch(authNotifierProvider).value!.token!,
+                          product.id,
+                          1);
                     },
                     style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 14),

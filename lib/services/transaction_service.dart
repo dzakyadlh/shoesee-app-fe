@@ -8,7 +8,7 @@ class TransactionService {
 
   Future<bool> checkout(
     String token,
-    List<CartModel> cart,
+    List<CartProduct> cart,
     String address,
     double totalPrice,
     double shippingPrice,
@@ -22,12 +22,11 @@ class TransactionService {
     var body = jsonEncode({
       'address': address,
       'items': cart
-          .map(
-            (e) => {
-              'id': e.product.id,
-              'quantity': e.quantity,
-            },
-          )
+          .map((e) => {
+                'product_id':
+                    e.productId, // Adjust to the backend's field names
+                'quantity': e.quantity,
+              })
           .toList(),
       'status': 'PENDING',
       'total_price': totalPrice,

@@ -1,25 +1,23 @@
-import 'package:e_commerce_app/models/user_model.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final nameController = TextEditingController();
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    UserModel user = authProvider.user;
+    final user = ref.watch(authNotifierProvider).value;
 
     PreferredSizeWidget header() {
       return PreferredSize(
@@ -57,7 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Widget profilePicture() {
       return ClipOval(
         child: Image.network(
-          user.photoUrl.toString(),
+          user!.photoUrl.toString(),
           width: 100,
           height: 100,
           fit: BoxFit.cover,
@@ -78,7 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: nameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user.name,
+                hintText: user?.name,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -93,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: usernameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user.username,
+                hintText: user?.username,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -108,7 +106,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: emailController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user.email,
+                hintText: user?.email,
                 hintStyle: primaryTextStyle,
               ),
             ),

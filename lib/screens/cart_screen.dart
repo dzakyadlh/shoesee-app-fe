@@ -2,22 +2,20 @@ import 'package:e_commerce_app/components/cart_tile.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  ConsumerState<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends ConsumerState<CartScreen> {
   List cartItems = ['any'];
 
   @override
   Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
-
     PreferredSizeWidget header() {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
@@ -86,7 +84,9 @@ class _CartScreenState extends State<CartScreen> {
       return ListView(
         padding: EdgeInsets.only(
             bottom: defaultMargin, left: defaultMargin, right: defaultMargin),
-        children: cartProvider.carts
+        children: ref
+            .watch(cartNotifierProvider)
+            .value!
             .map(
               (product) => CartTile(
                 cartItem: product,
@@ -111,7 +111,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: primaryTextStyle.copyWith(fontSize: 14),
                   ),
                   Text(
-                    '\$${cartProvider.totalPrice()}',
+                    '\$${ref.read(cartNotifierProvider.notifier).totalPrice()}',
                     style: priceTextStyle.copyWith(
                         fontSize: 16, fontWeight: semibold),
                   )
@@ -165,9 +165,12 @@ class _CartScreenState extends State<CartScreen> {
       appBar: header(),
       backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
-      body: cartProvider.carts.isEmpty ? emptyCart() : contents(),
-      bottomNavigationBar:
-          cartProvider.carts.isEmpty ? const SizedBox() : customBottomNavbar(),
+      body: ref.watch(cartNotifierProvider).value!.isEmpty
+          ? emptyCart()
+          : contents(),
+      bottomNavigationBar: ref.watch(cartNotifierProvider).value!.isEmpty
+          ? const SizedBox()
+          : customBottomNavbar(),
     );
   }
 }

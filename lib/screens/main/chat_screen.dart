@@ -6,21 +6,18 @@ import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    ScreenProvider screenProvider = Provider.of(context);
-
     Widget header() {
       return AppBar(
         backgroundColor: backgroundSecondaryColor,
@@ -70,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 buttonText: 'Explore Store',
                 buttonTextSize: 16,
                 onPressed: () {
-                  screenProvider.currentIndex = 0;
+                  ref.read(screenNotifierProvider.notifier).setCurrentIndex(0);
                 })
           ],
         ),
@@ -79,8 +76,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     Widget contents() {
       return StreamBuilder<List<MessageModel>>(
-        stream:
-            MessageService().getMessagesByUserId(userId: authProvider.user.id),
+        stream: MessageService().getMessagesByUserId(
+            userId: ref.watch(authNotifierProvider).value!.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading indicator while data is loading

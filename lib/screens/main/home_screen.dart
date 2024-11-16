@@ -1,30 +1,25 @@
 import 'package:e_commerce_app/components/product_card.dart';
 import 'package:e_commerce_app/components/product_tile.dart';
-import 'package:e_commerce_app/models/product_model.dart';
-import 'package:e_commerce_app/models/user_model.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedCategory = 0;
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    UserModel user = authProvider.user;
-
-    ProductProvider productProvider = Provider.of<ProductProvider>(context);
-    List<ProductModel> products = productProvider.products;
+    final user = ref.watch(authNotifierProvider).value;
+    final products = ref.watch(productNotifierProvider).value;
 
     Widget header() {
       return Container(
@@ -39,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, ${user.name}!',
+                    'Hello, ${user?.name}!',
                     style: primaryTextStyle.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   ),
@@ -47,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 4,
                   ),
                   Text(
-                    '@${user.username}',
+                    '@${user?.username}',
                     style: subtitleTextStyle.copyWith(fontSize: 16),
                   )
                 ],
@@ -92,9 +87,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     _selectedCategory = index;
                   });
                   if (_selectedCategory == 0) {
-                    productProvider.clearFilter();
+                    ref.read(productNotifierProvider.notifier).clearFilter();
                   } else {
-                    productProvider.filterProductsByCategory(_selectedCategory);
+                    ref
+                        .read(productNotifierProvider.notifier)
+                        .filterProductsByCategory(_selectedCategory);
                   }
                 },
                 child: Container(
@@ -147,14 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 280,
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: products.length,
+                itemCount: products?.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (_, index) {
                   return Container(
                       margin: index == 0
                           ? EdgeInsets.only(left: defaultMargin)
                           : const EdgeInsets.only(left: 16),
-                      child: ProductCard(product: products[index]));
+                      child: ProductCard(product: products![index]));
                 }),
           )
         ]),
@@ -176,11 +173,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListView.builder(
                 shrinkWrap: true,
-                itemCount: products.length,
+                itemCount: products?.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, index) {
                   return GestureDetector(
-                      child: ProductTile(product: products[index]));
+                      child: ProductTile(product: products![index]));
                 })
           ],
         ),

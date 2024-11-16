@@ -3,60 +3,54 @@ import 'package:e_commerce_app/components/loading_button.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final nameController = TextEditingController(text: '');
   final usernameController = TextEditingController(text: '');
   final emailController = TextEditingController(text: '');
   final passwordController = TextEditingController(text: '');
   final _formKey = GlobalKey<FormState>();
-
-  String name = '';
-  String username = '';
-  String email = '';
-  String password = '';
   bool isLoading = false;
 
   Future<void> signup() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+    final signupState = await ref.read(authNotifierProvider.notifier).register(
+          name: nameController.text,
+          username: usernameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+        );
 
-    setState(() {
-      isLoading = true;
-    });
-
-    if (await authProvider.register(
-      name: nameController.text,
-      username: usernameController.text,
-      email: emailController.text,
-      password: passwordController.text,
-    )) {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-      }
-    } else {
-      if (mounted) {
+    signupState.when(
+      data: (user) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pushNamedAndRemoveUntil(context, '/signin', (_) => false);
+      },
+      loading: () {
+        setState(() {
+          isLoading = true;
+        });
+      },
+      error: (error, stackTrace) {
+        setState(() {
+          isLoading = false;
+        });
+        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
-          content: const Text(
-            'Registration failed',
-            textAlign: TextAlign.center,
-          ),
+          content: Text(error.toString(), textAlign: TextAlign.center),
         ));
-      }
-    }
-
-    setState(() {
-      isLoading = false;
-    });
+      },
+    );
   }
 
   @override

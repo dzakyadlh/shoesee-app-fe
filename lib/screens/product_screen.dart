@@ -1,22 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductScreen extends StatefulWidget {
+class ProductScreen extends ConsumerStatefulWidget {
   const ProductScreen({super.key, required this.product});
 
   final ProductModel product;
 
   @override
-  State<ProductScreen> createState() => _ProductScreenState();
+  ConsumerState<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenState extends ConsumerState<ProductScreen> {
   int currentIndex = 0;
 
   List similarShoes = [
@@ -32,11 +33,9 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
-
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
-
-    bool isWishlisted = wishlistProvider.isWishlisted(widget.product);
+    bool isWishlisted = ref
+        .read(wishlistNotifierProvider.notifier)
+        .isWishlisted(widget.product);
 
     Future<void> showSuccessDialog() async {
       return showDialog(
@@ -226,7 +225,9 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 IconButton(
                   onPressed: () {
-                    wishlistProvider.setProduct(widget.product);
+                    ref
+                        .read(wishlistNotifierProvider.notifier)
+                        .setProduct(widget.product);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                         isWishlisted
@@ -361,7 +362,12 @@ class _ProductScreenState extends State<ProductScreen> {
                     height: 54,
                     child: FilledButton(
                         onPressed: () {
-                          cartProvider.addCart(widget.product);
+                          ref
+                              .read(cartNotifierProvider.notifier)
+                              .updateCartProduct(
+                                  ref.watch(authNotifierProvider).value!.token!,
+                                  widget.product.id,
+                                  1);
                           showSuccessDialog();
                         },
                         style: FilledButton.styleFrom(

@@ -2,17 +2,17 @@ import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     getInit();
@@ -23,14 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('userToken');
+    await ref.read(authNotifierProvider.notifier).loadUserSession();
+    await ref.read(productNotifierProvider.notifier).getProducts();
     if (mounted) {
-      // await Provider.of<AuthProvider>(context, listen: false).logout();
-      // Load user session in AuthProvider
-      await Provider.of<AuthProvider>(context, listen: false).loadUserSession();
-
-      // Optionally load products (if needed for initial display)
-      await Provider.of<ProductProvider>(context, listen: false).getProducts();
-
       // Delay for splash effect
       await Future.delayed(const Duration(seconds: 3));
 

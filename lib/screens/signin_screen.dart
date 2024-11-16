@@ -3,16 +3,16 @@ import 'package:e_commerce_app/components/loading_button.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SigninScreen extends StatefulWidget {
+class SigninScreen extends ConsumerStatefulWidget {
   const SigninScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  ConsumerState<SigninScreen> createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends ConsumerState<SigninScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -22,34 +22,34 @@ class _SigninScreenState extends State<SigninScreen> {
   bool isLoading = false;
 
   Future<void> login() async {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
-    setState(() {
-      isLoading = true;
-    });
+    final loginState = await ref.read(authNotifierProvider.notifier).login(
+          email: emailController.text,
+          password: passwordController.text,
+        );
 
-    if (await authProvider.login(
-      email: emailController.text,
-      password: passwordController.text,
-    )) {
-      if (mounted) {
+    loginState.when(
+      data: (user) {
+        setState(() {
+          isLoading = false;
+        });
         Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-      }
-    } else {
-      if (mounted) {
+      },
+      loading: () {
+        setState(() {
+          isLoading = true;
+        });
+      },
+      error: (error, stackTrace) {
+        setState(() {
+          isLoading = false;
+        });
+        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
-          content: const Text(
-            'Login failed',
-            textAlign: TextAlign.center,
-          ),
+          content: Text(error.toString(), textAlign: TextAlign.center),
         ));
-      }
-    }
-
-    setState(() {
-      isLoading = false;
-    });
+      },
+    );
   }
 
   @override

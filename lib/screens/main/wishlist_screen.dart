@@ -4,20 +4,19 @@ import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WishlistScreen extends StatefulWidget {
+class WishlistScreen extends ConsumerStatefulWidget {
   const WishlistScreen({super.key});
 
   @override
-  State<WishlistScreen> createState() => _WishlistScreenState();
+  ConsumerState<WishlistScreen> createState() => _WishlistScreenState();
 }
 
-class _WishlistScreenState extends State<WishlistScreen> {
+class _WishlistScreenState extends ConsumerState<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
-    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
-    ScreenProvider screenProvider = Provider.of(context);
+    final wishlists = ref.read(wishlistNotifierProvider);
 
     Widget header() {
       return AppBar(
@@ -65,7 +64,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
               buttonText: 'Explore Store',
               buttonTextSize: 16,
               onPressed: () {
-                screenProvider.currentIndex = 0;
+                ref.read(screenNotifierProvider.notifier).setCurrentIndex(0);
               })
         ],
       ));
@@ -76,7 +75,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
         child: Container(
             padding: EdgeInsets.all(defaultMargin),
             child: ListView(
-              children: wishlistProvider.wishlist
+              children: wishlists
                   .map((product) => WishlistTile(
                         product: product,
                       ))
@@ -88,10 +87,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     return Container(
       color: backgroundPrimaryColor,
       child: Column(
-        children: [
-          header(),
-          wishlistProvider.wishlist.isEmpty ? emptyWishlist() : contents()
-        ],
+        children: [header(), wishlists.isEmpty ? emptyWishlist() : contents()],
       ),
     );
   }

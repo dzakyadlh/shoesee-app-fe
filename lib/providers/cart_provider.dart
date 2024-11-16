@@ -1,71 +1,70 @@
 import 'package:e_commerce_app/models/cart_model.dart';
-import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/services/cart_service.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class CartProvider with ChangeNotifier {
-  List<CartModel> _carts = [];
+part 'cart_provider.g.dart';
 
-  List<CartModel> get carts => _carts;
-
-  set carts(List<CartModel> carts) {
-    _carts = carts;
-    notifyListeners();
+@riverpod
+class CartNotifier extends _$CartNotifier {
+  @override
+  AsyncValue<List<CartProduct>> build() {
+    return const AsyncValue.loading();
   }
 
-  addCart(ProductModel product) {
-    if (isProductExist(product)) {
-      int index = _carts.indexWhere((e) => e.product.id == product.id);
-      _carts[index].quantity++;
-    } else {
-      _carts.add(CartModel(
-        id: _carts.length,
-        product: product,
-        quantity: 1,
-      ));
+  // Fetch cart products and update state with AsyncValue
+  Future<void> getCartProducts(String token) async {
+    try {
+      state = const AsyncValue.loading(); // Set loading state
+      List<CartProduct> cartProducts = await CartService().getCart(token);
+      state = AsyncValue.data(cartProducts); // Set data state
+    } catch (e, stackTrace) {
+      debugPrint('Fetching error: $e');
+      state = AsyncValue.error(e, stackTrace); // Set error state
+      throw Exception('Failed to load cart data');
     }
-
-    notifyListeners();
   }
 
-  removeCart(int id) {
-    carts.removeAt(id);
-    notifyListeners();
-  }
-
-  addQuantity(int id) {
-    _carts[id].quantity++;
-    notifyListeners();
-  }
-
-  reduceQuantity(int id) {
-    _carts[id].quantity--;
-    if (_carts[id].quantity == 0) {
-      _carts.removeAt(id);
+  // Update the quantity of a product and update state
+  Future<void> updateCartProduct(
+      String token, int productId, int quantity) async {
+    try {
+      await CartService().updateCartProduct(token, productId, quantity);
+      await getCartProducts(token);
+    } catch (e, stackTrace) {
+      debugPrint('Cart update error: $e');
+      state = AsyncValue.error(e, stackTrace); // Set error state
+      throw Exception('Failed to update cart data');
     }
-    notifyListeners();
   }
 
-  totalItems() {
-    int total = 0;
-    for (var item in carts) {
-      total += item.quantity;
+  // Remove a product from the cart and update state
+  Future<void> removeCartProduct(String token, int productId) async {
+    try {
+      await CartService().removeCartProduct(token, productId);
+      await getCartProducts(token);
+    } catch (e, stackTrace) {
+      debugPrint('Removing error: $e');
+      state = AsyncValue.error(e, stackTrace); // Set error state
+      throw Exception('Failed to remove cart product');
     }
+  }
+
+  Future<double> totalPrice() async {
+    if (state.value == null) {
+      return 0.0;
+    }
+    double total = state.value!
+        .fold(0, (prev, current) => prev + (current.price * current.quantity));
     return total;
   }
 
-  totalPrice() {
-    double total = 0;
-    for (var item in carts) {
-      total += item.quantity * item.product.price;
+  Future<double> totalItems() async {
+    if (state.value == null) {
+      return 0.0;
     }
+    double total =
+        state.value!.fold(0, (prev, current) => prev + current.quantity);
     return total;
-  }
-
-  isProductExist(ProductModel product) {
-    if (_carts.indexWhere((e) => e.product.id == product.id) == -1) {
-      return false;
-    } else {
-      return true;
-    }
   }
 }

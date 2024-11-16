@@ -1,21 +1,19 @@
 import 'package:e_commerce_app/components/settings_tile.dart';
-import 'package:e_commerce_app/models/user_model.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    UserModel user = authProvider.user;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authNotifierProvider).value;
 
     Future<void> handleLogout() async {
       try {
-        await authProvider.logout();
+        await ref.read(authNotifierProvider.notifier).logout();
         Navigator.pushNamedAndRemoveUntil(
             context, '/landing', (route) => false);
       } catch (e) {
@@ -57,12 +55,12 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, ${user.name}!',
+                    'Hello, ${user?.name}!',
                     style: primaryTextStyle.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   ),
                   Text(
-                    '@${user.username}',
+                    '@${user?.username}',
                     style: subtitleTextStyle.copyWith(fontSize: 16),
                   )
                 ],

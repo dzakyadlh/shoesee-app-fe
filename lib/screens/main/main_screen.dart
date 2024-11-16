@@ -5,16 +5,16 @@ import 'package:e_commerce_app/screens/main/profile_screen.dart';
 import 'package:e_commerce_app/screens/main/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   final List _pages = [
     const HomeScreen(),
     const ChatScreen(),
@@ -24,8 +24,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenProvider screenProvider = Provider.of(context);
-
     Widget cartButton() {
       return FloatingActionButton(
         onPressed: () {
@@ -42,6 +40,7 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     Widget customBottomNav() {
+      final currentIndex = ref.watch(screenNotifierProvider);
       return ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         child: BottomAppBar(
@@ -56,9 +55,11 @@ class _MainScreenState extends State<MainScreen> {
                 type: BottomNavigationBarType.fixed,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
-                currentIndex: screenProvider.currentIndex,
+                currentIndex: currentIndex,
                 onTap: (value) {
-                  screenProvider.currentIndex = value;
+                  ref
+                      .read(screenNotifierProvider.notifier)
+                      .setCurrentIndex(value);
                 },
                 items: [
                   BottomNavigationBarItem(
@@ -68,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.home,
                           size: 24,
-                          color: screenProvider.currentIndex == 0
+                          color: currentIndex == 0
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -80,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.chat,
                           size: 24,
-                          color: screenProvider.currentIndex == 1
+                          color: currentIndex == 1
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -92,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.favorite,
                           size: 24,
-                          color: screenProvider.currentIndex == 2
+                          color: currentIndex == 2
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -104,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: Icon(
                           Icons.person,
                           size: 24,
-                          color: screenProvider.currentIndex == 3
+                          color: currentIndex == 3
                               ? primaryColor
                               : const Color(0xFF808191),
                         ),
@@ -121,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: cartButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: customBottomNav(),
-      body: SafeArea(child: _pages[screenProvider.currentIndex]),
+      body: SafeArea(child: _pages[ref.watch(screenNotifierProvider)]),
     );
   }
 }

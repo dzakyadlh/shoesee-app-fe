@@ -1,31 +1,26 @@
 import 'package:e_commerce_app/models/product_model.dart';
-import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class WishlistProvider with ChangeNotifier {
-  List<ProductModel> _wishlist = [];
+part 'wishlist_provider.g.dart';
 
-  List<ProductModel> get wishlist => _wishlist;
-
-  set wishlist(List<ProductModel> wishlist) {
-    _wishlist = wishlist;
-    notifyListeners();
+@riverpod
+class WishlistNotifier extends _$WishlistNotifier {
+  @override
+  List<ProductModel> build() {
+    return [];
   }
 
-  setProduct(ProductModel product) {
+  void setProduct(ProductModel product) {
     if (!isWishlisted(product)) {
-      _wishlist.add(product);
+      state = [...state, product]; // Add to wishlist
     } else {
-      _wishlist.removeWhere((e) => e.id == product.id);
+      state = state
+          .where((e) => e.id != product.id)
+          .toList(); // Remove from wishlist
     }
-
-    notifyListeners();
   }
 
-  isWishlisted(ProductModel product) {
-    if (_wishlist.indexWhere((e) => e.id == product.id) == -1) {
-      return false;
-    } else {
-      return true;
-    }
+  bool isWishlisted(ProductModel product) {
+    return state.indexWhere((e) => e.id == product.id) != -1;
   }
 }

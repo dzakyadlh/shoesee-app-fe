@@ -1,64 +1,68 @@
 import 'dart:convert';
-
 import 'package:e_commerce_app/models/user_model.dart';
 import 'package:e_commerce_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthProvider with ChangeNotifier {
-  UserModel _user = UserModel(id: 0, name: '', email: '', username: '');
+part 'auth_provider.g.dart';
 
-  UserModel get user => _user;
-
-  set user(UserModel user) {
-    _user = user;
-    notifyListeners();
+@riverpod
+class AuthNotifier extends _$AuthNotifier {
+  // Initial state is AsyncLoading to indicate loading status
+  @override
+  AsyncValue<UserModel> build() {
+    return const AsyncLoading();
   }
 
-  Future<bool> register({
+  // Register user
+  Future<AsyncValue<UserModel>> register({
     required String name,
     required String username,
     required String email,
     required String password,
   }) async {
     try {
+      // Call the register method and return AsyncData with the user model on success
       UserModel user = await AuthService().register(
           name: name, username: username, email: email, password: password);
-
-      _user = user;
-
-      return true;
-    } catch (e) {
+      return AsyncData(user);
+    } catch (e, stackTrace) {
+      // Return AsyncError if there is an error
       debugPrint('Error during registration: $e');
-      return false;
+      return AsyncError(e.toString(), stackTrace);
     }
   }
 
-  Future<bool> login({
+  // Login user
+  Future<AsyncValue<UserModel>> login({
     required String email,
     required String password,
   }) async {
     try {
+      // Show loading state while the login process is happening
+      state = const AsyncLoading();
+
+      // Perform login
       UserModel user =
           await AuthService().login(email: email, password: password);
 
-      _user = user;
-
+      // Save user to shared preferences
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      String userData = jsonEncode(
-          user.toJson()); // Converts the user data to a proper JSON string
+      String userData = jsonEncode(user.toJson());
       await preferences.setString('userData', userData);
       await preferences.setString('userToken', user.token ?? '');
 
-      notifyListeners();
-
-      return true;
-    } catch (e) {
+      // Return AsyncData if login is successful
+      return AsyncData(user);
+    } catch (e, stackTrace) {
+      // Return AsyncError in case of failure
       debugPrint('Error during login: $e');
-      return false;
+      return AsyncError(e.toString(), stackTrace);
     }
   }
 
+  // Load user session from shared preferences
   Future<void> loadUserSession() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('userToken');
@@ -69,16 +73,18 @@ class AuthProvider with ChangeNotifier {
       UserModel user = UserModel.fromJson(json);
       user.token = token;
 
-      _user = user;
-      notifyListeners();
+      state = AsyncData(user);
+    } else {
+      state = AsyncData(UserModel(id: 0, name: '', email: '', username: ''));
     }
   }
 
+  // Logout user
   Future<void> logout() async {
-    _user = UserModel(id: 0, name: '', email: '', username: '');
+    state = AsyncData(UserModel(id: 0, name: '', email: '', username: ''));
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove('userToken');
     await preferences.remove('userData');
-    notifyListeners();
   }
 }

@@ -5,27 +5,25 @@ import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/services/message_service.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatDetailScreen extends StatefulWidget {
+class ChatDetailScreen extends ConsumerStatefulWidget {
   ChatDetailScreen({super.key, required this.product});
 
   ProductModel product;
 
   @override
-  State<ChatDetailScreen> createState() => _ChatDetailScreenState();
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends State<ChatDetailScreen> {
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   TextEditingController chatController = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
-    handleSend() async {
+    Future<void> handleSend() async {
       await MessageService().addMessage(
-        user: authProvider.user,
+        user: ref.watch(authNotifierProvider).value!,
         isFromUser: true,
         message: chatController.text,
         product: widget.product,
@@ -212,8 +210,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
     Widget contents() {
       return StreamBuilder<List<MessageModel>>(
-        stream:
-            MessageService().getMessagesByUserId(userId: authProvider.user.id),
+        stream: MessageService().getMessagesByUserId(
+            userId: ref.watch(authNotifierProvider).value!.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

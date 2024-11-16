@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class ScreenProvider with ChangeNotifier {
-  int _currentIndex = 0;
+part 'screen_provider.g.dart';
 
-  int get currentIndex => _currentIndex;
+@riverpod
+class ScreenNotifier extends _$ScreenNotifier {
+  @override
+  int build() {
+    return 0; // Default currentIndex is 0
+  }
 
-  set currentIndex(int index) {
-    _currentIndex = index;
-    notifyListeners();
+  void setCurrentIndex(int index) {
+    state = index; // Update the state with the new index
   }
 }
