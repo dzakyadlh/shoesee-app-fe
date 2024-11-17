@@ -24,11 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('userToken');
     if (mounted) {
-      // await Provider.of<AuthProvider>(context, listen: false).logout();
-      // Load user session in AuthProvider
       await Provider.of<AuthProvider>(context, listen: false).loadUserSession();
-
-      // Optionally load products (if needed for initial display)
       await Provider.of<ProductProvider>(context, listen: false).getProducts();
 
       // Delay for splash effect

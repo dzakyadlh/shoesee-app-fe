@@ -15,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
     Future<void> handleLogout() async {
       try {
-        await authProvider.logout();
+        await authProvider.logout(authProvider.user.token!);
         Navigator.pushNamedAndRemoveUntil(
             context, '/landing', (route) => false);
       } catch (e) {

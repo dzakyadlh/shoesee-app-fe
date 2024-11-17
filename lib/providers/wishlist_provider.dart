@@ -1,31 +1,64 @@
-import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/models/wishlist_model.dart';
+import 'package:e_commerce_app/services/wishlist_service.dart';
 import 'package:flutter/material.dart';
 
 class WishlistProvider with ChangeNotifier {
-  List<ProductModel> _wishlist = [];
+  WishlistModel _wishlist =
+      WishlistModel(id: 0, userId: 0, wishlistedProduct: []);
+  WishlistModel get wishlist => _wishlist;
 
-  List<ProductModel> get wishlist => _wishlist;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-  set wishlist(List<ProductModel> wishlist) {
+  set wishlist(WishlistModel wishlist) {
     _wishlist = wishlist;
     notifyListeners();
   }
 
-  setProduct(ProductModel product) {
-    if (!isWishlisted(product)) {
-      _wishlist.add(product);
-    } else {
-      _wishlist.removeWhere((e) => e.id == product.id);
-    }
-
+  Future<void> getWishlists(String token) async {
+    _isLoading = true;
     notifyListeners();
+    try {
+      _wishlist = await WishlistService().getWishlists(token);
+    } catch (e) {
+      debugPrint('Fetching error: $e');
+      throw Exception('Failed to load wishlist data');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  isWishlisted(ProductModel product) {
-    if (_wishlist.indexWhere((e) => e.id == product.id) == -1) {
-      return false;
-    } else {
-      return true;
+  Future<void> addWishlist(String token, int productId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      _wishlist = await WishlistService().addWishlist(token, productId);
+    } catch (e) {
+      debugPrint('Updating error: $e');
+      throw Exception('Failed to add wishlist data');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+  }
+
+  Future<void> removeWishlist(String token, int productId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      _wishlist = await WishlistService().removeWishlist(token, productId);
+    } catch (e) {
+      debugPrint('Updating error: $e');
+      throw Exception('Failed to remove wishlist data');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  bool isWishlisted(int productId) {
+    return _wishlist.wishlistedProduct
+        .any((product) => product.productId == productId);
   }
 }

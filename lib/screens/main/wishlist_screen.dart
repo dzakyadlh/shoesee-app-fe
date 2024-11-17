@@ -1,5 +1,7 @@
 import 'package:e_commerce_app/components/custom_buttons.dart';
+import 'package:e_commerce_app/components/loading_screen.dart';
 import 'package:e_commerce_app/components/wishlist_tile.dart';
+import 'package:e_commerce_app/models/wishlist_model.dart';
 import 'package:e_commerce_app/providers/screen_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,6 @@ class WishlistScreen extends StatefulWidget {
 class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
-    WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
     ScreenProvider screenProvider = Provider.of(context);
 
     Widget header() {
@@ -71,12 +72,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
       ));
     }
 
-    Widget contents() {
+    Widget contents(List<WishlistedProduct> wishlists) {
       return Expanded(
         child: Container(
             padding: EdgeInsets.all(defaultMargin),
             child: ListView(
-              children: wishlistProvider.wishlist
+              children: wishlists
                   .map((product) => WishlistTile(
                         product: product,
                       ))
@@ -86,13 +87,21 @@ class _WishlistScreenState extends State<WishlistScreen> {
     }
 
     return Container(
-      color: backgroundPrimaryColor,
-      child: Column(
-        children: [
-          header(),
-          wishlistProvider.wishlist.isEmpty ? emptyWishlist() : contents()
-        ],
-      ),
-    );
+        color: backgroundPrimaryColor,
+        child: Consumer<WishlistProvider>(
+            builder: (context, wishlistProvider, child) {
+          if (wishlistProvider.isLoading) {
+            return const LoadingScreen();
+          }
+
+          return Column(
+            children: [
+              header(),
+              wishlistProvider.wishlist.wishlistedProduct.isEmpty
+                  ? emptyWishlist()
+                  : contents(wishlistProvider.wishlist.wishlistedProduct)
+            ],
+          );
+        }));
   }
 }

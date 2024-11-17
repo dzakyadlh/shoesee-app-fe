@@ -60,4 +60,23 @@ class AuthService {
       throw Exception('Login failed: $errorMessage');
     }
   }
+
+  Future<bool> logout({required String token}) async {
+    var url = Uri.parse('$baseUrl/logout');
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    var response = await http.post(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      var errorData = jsonDecode(response.body); // Decode the error response
+      var errorMessage = errorData['message'] ??
+          'Log out failed'; // Extract error message if available
+      throw Exception('Log out failed: $errorMessage');
+    }
+  }
 }

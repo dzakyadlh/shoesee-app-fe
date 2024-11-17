@@ -1,17 +1,24 @@
-import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/models/wishlist_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:provider/provider.dart';
 
-class WishlistTile extends StatelessWidget {
+class WishlistTile extends StatefulWidget {
   const WishlistTile({super.key, required this.product});
 
-  final ProductModel product;
+  final WishlistedProduct product;
 
+  @override
+  State<WishlistTile> createState() => _WishlistTileState();
+}
+
+class _WishlistTileState extends State<WishlistTile> {
   @override
   Widget build(BuildContext context) {
     WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
+    AuthProvider authProvider = Provider.of(context);
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -26,7 +33,7 @@ class WishlistTile extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
-              product.gallery[0].url,
+              widget.product.gallery[0].url,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -40,12 +47,12 @@ class WishlistTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.name,
+                  widget.product.name,
                   style: primaryTextStyle.copyWith(
                       fontSize: 14, fontWeight: semibold),
                 ),
                 Text(
-                  '\$${product.price}',
+                  '\$${widget.product.price}',
                   style:
                       priceTextStyle.copyWith(fontSize: 14, fontWeight: medium),
                 )
@@ -54,7 +61,10 @@ class WishlistTile extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              wishlistProvider.setProduct(product);
+              wishlistProvider.removeWishlist(
+                authProvider.user.token!,
+                widget.product.productId,
+              );
             },
             icon: Icon(
               Icons.favorite,

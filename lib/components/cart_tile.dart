@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/models/cart_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
@@ -7,7 +8,7 @@ import 'package:provider/provider.dart';
 class CartTile extends StatefulWidget {
   const CartTile({super.key, required this.cartItem});
 
-  final CartModel cartItem;
+  final CartProduct cartItem;
 
   @override
   State<CartTile> createState() => _CartTileState();
@@ -17,6 +18,14 @@ class _CartTileState extends State<CartTile> {
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    final productQuantity = context
+        .read<CartProvider>()
+        .carts
+        .cartProducts
+        .firstWhere((item) => item.productId == widget.cartItem.productId)
+        .quantity;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -33,7 +42,7 @@ class _CartTileState extends State<CartTile> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  widget.cartItem.product.gallery[0].url,
+                  widget.cartItem.gallery[0].url,
                   width: 60,
                   height: 60,
                   fit: BoxFit.cover,
@@ -47,7 +56,7 @@ class _CartTileState extends State<CartTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.cartItem.product.name,
+                      widget.cartItem.name,
                       style: primaryTextStyle.copyWith(
                           fontSize: 14, fontWeight: semibold),
                     ),
@@ -55,7 +64,7 @@ class _CartTileState extends State<CartTile> {
                       height: 2,
                     ),
                     Text(
-                      '\$${widget.cartItem.product.price}',
+                      '\$${widget.cartItem.price}',
                       style: priceTextStyle.copyWith(fontSize: 14),
                     )
                   ],
@@ -65,7 +74,11 @@ class _CartTileState extends State<CartTile> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      cartProvider.addQuantity(widget.cartItem.id);
+                      cartProvider.updateCartProduct(
+                        authProvider.user.token!,
+                        widget.cartItem.productId,
+                        1,
+                      );
                     },
                     child: Image.asset(
                       'assets/images/btn_add.png',
@@ -77,7 +90,7 @@ class _CartTileState extends State<CartTile> {
                     height: 2,
                   ),
                   Text(
-                    widget.cartItem.quantity.toString(),
+                    '$productQuantity',
                     style: primaryTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
                   ),
@@ -86,7 +99,11 @@ class _CartTileState extends State<CartTile> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      cartProvider.reduceQuantity(widget.cartItem.id);
+                      cartProvider.updateCartProduct(
+                        authProvider.user.token!,
+                        widget.cartItem.productId,
+                        -1,
+                      );
                     },
                     child: Image.asset(
                       'assets/images/btn_drop.png',
@@ -102,7 +119,13 @@ class _CartTileState extends State<CartTile> {
             height: 12,
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              cartProvider.updateCartProduct(
+                authProvider.user.token!,
+                widget.cartItem.productId,
+                -productQuantity,
+              );
+            },
             child: Row(
               children: [
                 Icon(

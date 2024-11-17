@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class TransactionProvider with ChangeNotifier {
   Future<bool> checkout(
     String token,
-    List<CartModel> cart,
+    CartModel cart,
     String address,
     double totalPrice,
     double shippingPrice,

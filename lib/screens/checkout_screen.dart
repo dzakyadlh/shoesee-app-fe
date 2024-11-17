@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/components/checkout_card.dart';
 import 'package:e_commerce_app/components/loading_button.dart';
+import 'package:e_commerce_app/components/loading_screen.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/transaction_provider.dart';
@@ -16,40 +17,42 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
+  String address = 'Tokyo';
+  double shippingPrice = 0.0;
   bool isLoading = false;
 
-  @override
-  Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
+  Future<void> handleCheckout() async {
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
     TransactionProvider transactionProvider =
-        Provider.of<TransactionProvider>(context);
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
-    String address = 'Tokyo';
-    double shippingPrice = 0.0;
-
-    handleCheckout() async {
-      setState(() {
-        isLoading = true;
-      });
-      if (await transactionProvider.checkout(
-          authProvider.user.token.toString(),
-          cartProvider.carts,
-          address,
-          cartProvider.totalPrice(),
-          shippingPrice)) {
-        cartProvider.carts = [];
+        Provider.of<TransactionProvider>(context, listen: false);
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    setState(() {
+      isLoading = true;
+    });
+    if (await transactionProvider.checkout(
+        authProvider.user.token.toString(),
+        cartProvider.carts,
+        address,
+        cartProvider.totalPrice(),
+        shippingPrice)) {
+      cartProvider.removeCart(authProvider.user.token!);
+      if (mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/checkout-success',
           (route) => false,
         );
       }
-      setState(() {
-        isLoading = false;
-      });
     }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     PreferredSizeWidget header() {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
@@ -155,7 +158,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
     }
 
-    Widget paymentSummary() {
+    Widget paymentSummary(CartProvider cartProvider) {
       return Container(
         margin: EdgeInsets.only(bottom: defaultMargin),
         padding: const EdgeInsets.all(20),
@@ -234,7 +237,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       fontSize: 14, fontWeight: semibold),
                 ),
                 Text(
-                  '\$${cartProvider.totalPrice() + shippingPrice}',
+                  '\$${(cartProvider.totalPrice()) + shippingPrice}',
                   style: priceTextStyle.copyWith(
                       fontSize: 14, fontWeight: semibold),
                 ),
@@ -267,7 +270,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
     }
 
-    Widget contents() {
+    Widget contents(CartProvider cartProvider) {
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -284,7 +287,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 height: 12,
               ),
               Column(
-                children: cartProvider.carts
+                children: cartProvider.carts.cartProducts
                     .map((product) => CheckoutCard(
                           cartItem: product,
                         ))
@@ -294,7 +297,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 height: 30,
               ),
               addressDetails(),
-              paymentSummary(),
+              paymentSummary(cartProvider),
               const Divider(
                 color: Color(0xFF2B2938),
               ),
@@ -309,7 +312,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundPrimaryColor,
       appBar: header(),
-      body: contents(),
+      body: SafeArea(child:
+          Consumer<CartProvider>(builder: (context, cartProvider, child) {
+        if (cartProvider.isLoading) {
+          return const LoadingScreen();
+        }
+        return contents(cartProvider);
+      })),
     );
   }
 }

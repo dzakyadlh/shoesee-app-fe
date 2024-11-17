@@ -74,11 +74,14 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
-    _user = UserModel(id: 0, name: '', email: '', username: '');
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove('userToken');
-    await preferences.remove('userData');
-    notifyListeners();
+  Future<void> logout(String token) async {
+    final logoutState = await AuthService().logout(token: token);
+    if (logoutState) {
+      _user = UserModel(id: 0, name: '', email: '', username: '');
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.remove('userToken');
+      await preferences.remove('userData');
+      notifyListeners();
+    }
   }
 }

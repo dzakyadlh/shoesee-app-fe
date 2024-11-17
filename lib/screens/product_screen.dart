@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:e_commerce_app/screens/chat_detail_screen.dart';
@@ -30,84 +31,115 @@ class _ProductScreenState extends State<ProductScreen> {
     'assets/images/shoe_1.png',
   ];
 
+  Future<void> handleAddToCart() async {
+    AuthProvider authProvider = Provider.of(context, listen: false);
+    CartProvider cartProvider = Provider.of(context, listen: false);
+    await cartProvider.updateCartProduct(
+        authProvider.user.token!, widget.product.id, 1);
+    showSuccessDialog();
+  }
+
+  Future<void> showSuccessDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => SizedBox(
+        width: MediaQuery.of(context).size.width - (2 * defaultMargin),
+        child: AlertDialog(
+          backgroundColor: backgroundTertiaryColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: primaryTextColor,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                Image.asset(
+                  'assets/images/icon_success.png',
+                  width: 100,
+                  height: 100,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  'Yay!',
+                  style: primaryTextStyle.copyWith(
+                      fontSize: 18, fontWeight: semibold),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  'Item added to your cart',
+                  style: secondaryTextStyle.copyWith(fontSize: 14),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                  child: FilledButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/cart');
+                      },
+                      style: FilledButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12))),
+                      child: Text(
+                        'View my Cart',
+                        style: primaryTextStyle.copyWith(
+                            fontSize: 16, fontWeight: medium),
+                      )),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     WishlistProvider wishlistProvider = Provider.of<WishlistProvider>(context);
 
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    bool isWishlisted = wishlistProvider.isWishlisted(widget.product.id);
 
-    bool isWishlisted = wishlistProvider.isWishlisted(widget.product);
-
-    Future<void> showSuccessDialog() async {
-      return showDialog(
-          context: context,
-          builder: (BuildContext context) => SizedBox(
-                width: MediaQuery.of(context).size.width - (2 * defaultMargin),
-                child: AlertDialog(
-                  backgroundColor: backgroundTertiaryColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: primaryTextColor,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/images/icon_success.png',
-                          width: 100,
-                          height: 100,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          'Yay!',
-                          style: primaryTextStyle.copyWith(
-                              fontSize: 18, fontWeight: semibold),
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          'Item added to your cart',
-                          style: secondaryTextStyle.copyWith(fontSize: 14),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 10),
-                          child: FilledButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/cart');
-                              },
-                              style: FilledButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12))),
-                              child: Text(
-                                'View my Cart',
-                                style: primaryTextStyle.copyWith(
-                                    fontSize: 16, fontWeight: medium),
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ));
+    Future<void> handleWishlist() async {
+      AuthProvider authProvider = Provider.of(context, listen: false);
+      WishlistProvider wishlistProvider =
+          Provider.of<WishlistProvider>(context, listen: false);
+      String token = authProvider.user.token!;
+      isWishlisted
+          ? wishlistProvider.removeWishlist(token, widget.product.id)
+          : wishlistProvider.addWishlist(token, widget.product.id);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          isWishlisted
+              ? 'This item has been removed to your wishlist'
+              : 'This item has been added from your wishlist',
+          textAlign: TextAlign.center,
+          style: primaryTextStyle.copyWith(fontSize: 12),
+        ),
+        backgroundColor: isWishlisted ? alertColor : primaryColor,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(6))),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        duration: const Duration(seconds: 3),
+      ));
     }
 
     PreferredSizeWidget topBar() {
@@ -226,22 +258,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 IconButton(
                   onPressed: () {
-                    wishlistProvider.setProduct(widget.product);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                        isWishlisted
-                            ? 'This item has been removed to your wishlist'
-                            : 'This item has been added from your wishlist',
-                        textAlign: TextAlign.center,
-                        style: primaryTextStyle.copyWith(fontSize: 12),
-                      ),
-                      backgroundColor: isWishlisted ? alertColor : primaryColor,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(6))),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      duration: const Duration(seconds: 3),
-                    ));
+                    handleWishlist();
                   },
                   icon: Icon(
                     Icons.favorite,
@@ -361,8 +378,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     height: 54,
                     child: FilledButton(
                         onPressed: () {
-                          cartProvider.addCart(widget.product);
-                          showSuccessDialog();
+                          handleAddToCart();
                         },
                         style: FilledButton.styleFrom(
                             backgroundColor: primaryColor,

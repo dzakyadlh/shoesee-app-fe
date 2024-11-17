@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
@@ -81,7 +82,11 @@ class ChatBubble extends StatelessWidget {
               children: [
                 OutlinedButton(
                     onPressed: () {
-                      cartProvider.addCart(product);
+                      cartProvider.updateCartProduct(
+                        context.watch<AuthProvider>().user.token!,
+                        product.id,
+                        1,
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 14),

@@ -1,4 +1,6 @@
 import 'package:e_commerce_app/components/cart_tile.dart';
+import 'package:e_commerce_app/components/loading_screen.dart';
+import 'package:e_commerce_app/models/cart_model.dart';
 import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
@@ -12,12 +14,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  List cartItems = ['any'];
-
   @override
   Widget build(BuildContext context) {
-    CartProvider cartProvider = Provider.of<CartProvider>(context);
-
     PreferredSizeWidget header() {
       return PreferredSize(
           preferredSize: const Size.fromHeight(70),
@@ -82,11 +80,11 @@ class _CartScreenState extends State<CartScreen> {
       );
     }
 
-    Widget contents() {
+    Widget contents(CartModel cart) {
       return ListView(
         padding: EdgeInsets.only(
             bottom: defaultMargin, left: defaultMargin, right: defaultMargin),
-        children: cartProvider.carts
+        children: cart.cartProducts
             .map(
               (product) => CartTile(
                 cartItem: product,
@@ -96,7 +94,7 @@ class _CartScreenState extends State<CartScreen> {
       );
     }
 
-    Widget customBottomNavbar() {
+    Widget customBottomNavbar(CartProvider cartProvider) {
       return Wrap(children: [
         Column(
           children: [
@@ -165,9 +163,24 @@ class _CartScreenState extends State<CartScreen> {
       appBar: header(),
       backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
-      body: cartProvider.carts.isEmpty ? emptyCart() : contents(),
+      body: SafeArea(child:
+          Consumer<CartProvider>(builder: (context, cartProvider, child) {
+        if (cartProvider.isLoading) {
+          return const LoadingScreen();
+        }
+        return cartProvider.carts.cartProducts.isEmpty
+            ? emptyCart()
+            : contents(cartProvider.carts);
+      })),
       bottomNavigationBar:
-          cartProvider.carts.isEmpty ? const SizedBox() : customBottomNavbar(),
+          Consumer<CartProvider>(builder: (context, cartProvider, child) {
+        if (cartProvider.isLoading) {
+          return const SizedBox();
+        }
+        return cartProvider.carts.cartProducts.isEmpty
+            ? const SizedBox()
+            : customBottomNavbar(cartProvider);
+      }),
     );
   }
 }

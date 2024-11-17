@@ -1,57 +1,50 @@
 import 'package:e_commerce_app/models/gallery_model.dart';
 
-class CartModel {
+class WishlistModel {
   int id;
   int userId;
-  List<CartProduct> cartProducts;
+  List<WishlistedProduct> wishlistedProduct;
 
-  CartModel({
+  WishlistModel({
     required this.id,
     required this.userId,
-    required this.cartProducts,
+    required this.wishlistedProduct,
   });
 
-  CartModel.fromJson(Map<String, dynamic> json)
+  WishlistModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         userId = json['user_id'],
-        cartProducts = (json['cart_products'] as List)
-            .map((item) => CartProduct.fromJson(item))
+        wishlistedProduct = (json['wishlists'] as List)
+            .map((item) => WishlistedProduct.fromJson(item))
             .toList();
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'user_id': userId,
-      'cart_products': cartProducts.map((product) => product.toJson()).toList(),
+      'wishlists':
+          wishlistedProduct.map((product) => product.toJson()).toList(),
     };
-  }
-
-  double getTotalPrice() {
-    return cartProducts.fold(
-        0.0, (total, item) => total + item.getTotalPrice());
   }
 }
 
-class CartProduct {
+class WishlistedProduct {
   int productId;
   String name;
   double price;
-  int quantity;
   List<GalleryModel> gallery;
 
-  CartProduct({
+  WishlistedProduct({
     required this.productId,
     required this.name,
     required this.price,
-    required this.quantity,
     required this.gallery,
   });
 
-  CartProduct.fromJson(Map<String, dynamic> json)
+  WishlistedProduct.fromJson(Map<String, dynamic> json)
       : productId = json['product_id'],
         name = json['name'],
         price = double.parse(json['price'].toString()),
-        quantity = json['quantity'],
         gallery = (json['gallery'] as List)
             .map((item) => GalleryModel.fromJson(item))
             .toList();
@@ -61,12 +54,7 @@ class CartProduct {
       'product_id': productId,
       'name': name,
       'price': price,
-      'quantity': quantity,
       'gallery': gallery.map((e) => e.toJson()).toList(),
     };
-  }
-
-  double getTotalPrice() {
-    return price * quantity;
   }
 }

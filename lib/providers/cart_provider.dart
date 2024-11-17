@@ -1,71 +1,80 @@
 import 'package:e_commerce_app/models/cart_model.dart';
-import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/services/cart_service.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
-  List<CartModel> _carts = [];
+  CartModel _carts = CartModel(id: 0, userId: 0, cartProducts: []);
+  CartModel get carts => _carts;
 
-  List<CartModel> get carts => _carts;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
-  set carts(List<CartModel> carts) {
+  set carts(CartModel carts) {
     _carts = carts;
     notifyListeners();
   }
 
-  addCart(ProductModel product) {
-    if (isProductExist(product)) {
-      int index = _carts.indexWhere((e) => e.product.id == product.id);
-      _carts[index].quantity++;
-    } else {
-      _carts.add(CartModel(
-        id: _carts.length,
-        product: product,
-        quantity: 1,
-      ));
+  Future<void> getCartProducts(String token) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      _carts = await CartService().getCart(token);
+    } catch (e) {
+      debugPrint('Fetching error: $e');
+      throw Exception('Failed to load cart data');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
-  removeCart(int id) {
-    carts.removeAt(id);
+  // Update the quantity of a product and update state
+  Future<void> updateCartProduct(
+      String token, int productId, int quantity) async {
+    _isLoading = true;
     notifyListeners();
-  }
-
-  addQuantity(int id) {
-    _carts[id].quantity++;
-    notifyListeners();
-  }
-
-  reduceQuantity(int id) {
-    _carts[id].quantity--;
-    if (_carts[id].quantity == 0) {
-      _carts.removeAt(id);
+    try {
+      _carts =
+          await CartService().updateCartProduct(token, productId, quantity);
+    } catch (e) {
+      debugPrint('Cart update error: $e');
+      throw Exception('Failed to update cart data');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  totalItems() {
-    int total = 0;
-    for (var item in carts) {
-      total += item.quantity;
+  // Remove a product from the cart and update state
+  Future<void> removeCart(String token) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      _carts = await CartService().removeCart(token);
+    } catch (e) {
+      debugPrint('Removing error: $e');
+      throw Exception('Failed to remove cart product');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+  }
+
+  double totalPrice() {
+    if (_carts.cartProducts.isEmpty) {
+      return 0.0;
+    }
+    double total = _carts.cartProducts
+        .fold(0, (prev, current) => prev + (current.price * current.quantity));
     return total;
   }
 
-  totalPrice() {
-    double total = 0;
-    for (var item in carts) {
-      total += item.quantity * item.product.price;
+  double totalItems() {
+    if (_carts.cartProducts.isEmpty) {
+      return 0.0;
     }
+    double total =
+        _carts.cartProducts.fold(0, (prev, current) => prev + current.quantity);
     return total;
-  }
-
-  isProductExist(ProductModel product) {
-    if (_carts.indexWhere((e) => e.product.id == product.id) == -1) {
-      return false;
-    } else {
-      return true;
-    }
   }
 }

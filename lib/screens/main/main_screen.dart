@@ -1,4 +1,7 @@
+import 'package:e_commerce_app/providers/auth_provider.dart';
+import 'package:e_commerce_app/providers/cart_provider.dart';
 import 'package:e_commerce_app/providers/screen_provider.dart';
+import 'package:e_commerce_app/providers/wishlist_provider.dart';
 import 'package:e_commerce_app/screens/main/chat_screen.dart';
 import 'package:e_commerce_app/screens/main/home_screen.dart';
 import 'package:e_commerce_app/screens/main/profile_screen.dart';
@@ -15,6 +18,19 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      AuthProvider authProvider = Provider.of(context, listen: false);
+      CartProvider cartProvider = Provider.of(context, listen: false);
+      WishlistProvider wishlistProvider = Provider.of(context, listen: false);
+      final token = authProvider.user.token!;
+      await cartProvider.getCartProducts(token);
+      await wishlistProvider.getWishlists(token);
+    });
+  }
+
   final List _pages = [
     const HomeScreen(),
     const ChatScreen(),
