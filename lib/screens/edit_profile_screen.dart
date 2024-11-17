@@ -17,7 +17,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authNotifierProvider).value;
+    final user = ref.watch(authNotifierProvider);
 
     PreferredSizeWidget header() {
       return PreferredSize(
@@ -55,7 +55,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     Widget profilePicture() {
       return ClipOval(
         child: Image.network(
-          user!.photoUrl.toString(),
+          user.value!.photoUrl.toString(),
           width: 100,
           height: 100,
           fit: BoxFit.cover,
@@ -76,7 +76,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               controller: nameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user?.name,
+                hintText: user.value?.name,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -91,7 +91,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               controller: usernameController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user?.username,
+                hintText: user.value?.username,
                 hintStyle: primaryTextStyle,
               ),
             ),
@@ -106,7 +106,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               controller: emailController,
               style: primaryTextStyle.copyWith(fontSize: 16),
               decoration: InputDecoration(
-                hintText: user?.email,
+                hintText: user.value?.email,
                 hintStyle: primaryTextStyle,
               ),
             ),

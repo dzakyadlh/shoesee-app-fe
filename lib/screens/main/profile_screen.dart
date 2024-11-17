@@ -9,7 +9,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authNotifierProvider).value;
+    final user = ref.watch(authNotifierProvider);
 
     Future<void> handleLogout() async {
       try {
@@ -55,12 +55,12 @@ class ProfileScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, ${user?.name}!',
+                    'Hello, ${user.value?.name}!',
                     style: primaryTextStyle.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   ),
                   Text(
-                    '@${user?.username}',
+                    '@${user.value?.username}',
                     style: subtitleTextStyle.copyWith(fontSize: 16),
                   )
                 ],

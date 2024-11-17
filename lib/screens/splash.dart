@@ -1,5 +1,4 @@
 import 'package:e_commerce_app/providers/auth_provider.dart';
-import 'package:e_commerce_app/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce_app/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,11 +19,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   getInit() async {
-    WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('userToken');
-    await ref.read(authNotifierProvider.notifier).loadUserSession();
-    await ref.read(productNotifierProvider.notifier).getProducts();
     if (mounted) {
       // Delay for splash effect
       await Future.delayed(const Duration(seconds: 3));
@@ -32,7 +28,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       // Navigate based on the presence of a user token
       if (mounted) {
         if (token != null) {
-          Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+          await ref.read(authNotifierProvider.notifier).loadUserSession();
+          if (mounted) {
+            Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+          }
         } else {
           Navigator.pushNamed(context, '/landing');
         }

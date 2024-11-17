@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/components/chat_tile.dart';
 import 'package:e_commerce_app/components/custom_buttons.dart';
+import 'package:e_commerce_app/components/loading_screen.dart';
 import 'package:e_commerce_app/models/message_model.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
 import 'package:e_commerce_app/providers/screen_provider.dart';
@@ -18,6 +19,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(authNotifierProvider);
     Widget header() {
       return AppBar(
         backgroundColor: backgroundSecondaryColor,
@@ -76,8 +78,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     Widget contents() {
       return StreamBuilder<List<MessageModel>>(
-        stream: MessageService().getMessagesByUserId(
-            userId: ref.watch(authNotifierProvider).value!.id),
+        stream: MessageService().getMessagesByUserId(userId: user.value!.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading indicator while data is loading

@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/components/loading_screen.dart';
 import 'package:e_commerce_app/components/product_card.dart';
 import 'package:e_commerce_app/components/product_tile.dart';
 import 'package:e_commerce_app/providers/auth_provider.dart';
@@ -17,9 +18,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedCategory = 0;
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(productNotifierProvider.notifier).getProducts();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authNotifierProvider).value;
-    final products = ref.watch(productNotifierProvider).value;
+    final user = ref.watch(authNotifierProvider);
+    final products = ref.watch(productNotifierProvider);
 
     Widget header() {
       return Container(
@@ -34,7 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, ${user?.name}!',
+                    'Hello, ${user.value?.name}!',
                     style: primaryTextStyle.copyWith(
                         fontSize: 24, fontWeight: semibold),
                   ),
@@ -42,7 +49,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     height: 4,
                   ),
                   Text(
-                    '@${user?.username}',
+                    '@${user.value?.username}',
                     style: subtitleTextStyle.copyWith(fontSize: 16),
                   )
                 ],
@@ -144,14 +151,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             height: 280,
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: products?.length,
+                itemCount: products.value?.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (_, index) {
                   return Container(
                       margin: index == 0
                           ? EdgeInsets.only(left: defaultMargin)
                           : const EdgeInsets.only(left: 16),
-                      child: ProductCard(product: products![index]));
+                      child: ProductCard(product: products.value![index]));
                 }),
           )
         ]),
@@ -173,11 +180,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             ListView.builder(
                 shrinkWrap: true,
-                itemCount: products?.length,
+                itemCount: products.value?.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, index) {
                   return GestureDetector(
-                      child: ProductTile(product: products![index]));
+                      child: ProductTile(product: products.value![index]));
                 })
           ],
         ),
@@ -188,17 +195,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: backgroundPrimaryColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              header(),
-              categorySlider(),
-              popularProducts(),
-              newArrivals()
-            ],
-          ),
+        child: products.when(
+          data: (products) {
+            if (products.isEmpty) {
+              return const Center(
+                  child: Text('No popular products available.'));
+            }
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  header(),
+                  categorySlider(),
+                  popularProducts(),
+                  newArrivals(),
+                ],
+              ),
+            );
+          },
+          loading: () => const LoadingScreen(),
+          error: (error, stackTrace) => Center(child: Text('Error: $error')),
         ),
       ),
     );

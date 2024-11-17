@@ -392,11 +392,16 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
       appBar: topBar(),
       backgroundColor: const Color.fromARGB(255, 236, 237, 239),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [header(), contents()],
-          ),
+        child: Column(
+          children: [
+            header(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.zero,
+                child: contents(),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -21,36 +21,33 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool isLoading = false;
 
   Future<void> signup() async {
-    final signupState = await ref.read(authNotifierProvider.notifier).register(
-          name: nameController.text,
-          username: usernameController.text,
-          email: emailController.text,
-          password: passwordController.text,
-        );
+    setState(() {
+      isLoading = true;
+    });
 
-    signupState.when(
-      data: (user) {
-        setState(() {
-          isLoading = false;
-        });
+    final isSignupSuccess =
+        await ref.read(authNotifierProvider.notifier).register(
+              name: nameController.text,
+              username: usernameController.text,
+              email: emailController.text,
+              password: passwordController.text,
+            );
+
+    if (isSignupSuccess) {
+      if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/signin', (_) => false);
-      },
-      loading: () {
-        setState(() {
-          isLoading = true;
-        });
-      },
-      error: (error, stackTrace) {
-        setState(() {
-          isLoading = false;
-        });
-        // Show error message
+      }
+    } else {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
-          content: Text(error.toString(), textAlign: TextAlign.center),
+          content: const Text(
+            'Sign Up failed. Please try again.',
+            textAlign: TextAlign.center,
+          ),
         ));
-      },
-    );
+      }
+    }
   }
 
   @override

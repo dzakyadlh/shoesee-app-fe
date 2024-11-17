@@ -22,34 +22,30 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   bool isLoading = false;
 
   Future<void> login() async {
-    final loginState = await ref.read(authNotifierProvider.notifier).login(
+    setState(() {
+      isLoading = true;
+    });
+
+    final isLoginSuccess = await ref.read(authNotifierProvider.notifier).login(
           email: emailController.text,
           password: passwordController.text,
         );
 
-    loginState.when(
-      data: (user) {
-        setState(() {
-          isLoading = false;
-        });
+    if (isLoginSuccess) {
+      if (mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-      },
-      loading: () {
-        setState(() {
-          isLoading = true;
-        });
-      },
-      error: (error, stackTrace) {
-        setState(() {
-          isLoading = false;
-        });
-        // Show error message
+      }
+    } else {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: alertColor,
-          content: Text(error.toString(), textAlign: TextAlign.center),
+          content: const Text(
+            'Sign In failed. Please try again.',
+            textAlign: TextAlign.center,
+          ),
         ));
-      },
-    );
+      }
+    }
   }
 
   @override
